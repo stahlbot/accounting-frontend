@@ -3,11 +3,13 @@ import { useAppDispatch } from "../../app/hooks"
 import { fetchToken } from "./userSlice"
 import { Button, Container, Paper, PasswordInput, TextInput, Title } from "@mantine/core"
 import { useForm } from '@mantine/form'
+import { useNavigate } from "react-router-dom"
 
 
 
 export const LoginPage = () => {
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     const [loginRequestStatus, setLoginRequestStatus] = useState('idle')
 
@@ -26,7 +28,7 @@ export const LoginPage = () => {
                 try {
                     setLoginRequestStatus('pending')
                     await dispatch(fetchToken({username, password})).unwrap()
-                    .then()
+                    navigate('/user')
                     
         
                 } catch (err){
