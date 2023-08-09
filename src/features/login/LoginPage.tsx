@@ -1,64 +1,53 @@
-import { Box, Button, TextField } from "@mui/material"
 import { useState } from "react"
 import { useAppDispatch } from "../../app/hooks"
 import { fetchToken } from "./userSlice"
-import { TextInput } from "@mantine/core"
+import { Button, PasswordInput, TextInput } from "@mantine/core"
+import { useForm } from '@mantine/form'
 
 
 
 export const LoginPage = () => {
     const dispatch = useAppDispatch()
 
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
     const [loginRequestStatus, setLoginRequestStatus] = useState('idle')
 
-    const onUsernameChanged = e => setUsername(e.target.value)
-    const onPasswordChanged = e => setPassword(e.target.value)
+    const form = useForm({
+        initialValues: {
+          password: '',
+          username: ''
+        },
+      })
 
-    const handleLoginClicked = async (e) => {
-        // prevent site from refreshing after submit
-        e.preventDefault() 
-        try {
-            console.log(`username: ${username}, password: ${password}`)
-
-            setLoginRequestStatus('pending')
-            await dispatch(fetchToken({username, password})).unwrap()
-            
-
-        } catch (err){
-            console.error('Failed to save the post: ', err)
-        } finally {
-            setLoginRequestStatus('idle')
+    const submit = form.onSubmit(
+        async ({password, username}) => {
+            try {
+                console.log(`username: ${password}, password: ${username}`)
+    
+                setLoginRequestStatus('pending')
+                await dispatch(fetchToken({username, password})).unwrap()
+                
+    
+            } catch (err){
+                console.error('Failed to save the post: ', err)
+            } finally {
+                setLoginRequestStatus('idle')
+            }
         }
-        
-
-    }
+    )
 
     return (
-        <Box component="form" onSubmit={handleLoginClicked} >
-            <TextField
-                required
-                id="username"
+        <form onSubmit={submit}>
+            <TextInput
+                placeholder="Username"
                 label="Username"
-                name="username"
-                autoFocus
-                value={username}
-                onChange={onUsernameChanged}
+                {...form.getInputProps('username')}
             />
-            <TextField 
-                required
-                id="password"
-                name="password"
+            <PasswordInput
+                placeholder="Password"
                 label="Password"
-                type="password"
-                value={password}
-                onChange={onPasswordChanged}
+                {...form.getInputProps('password')}
             />
-            <Button variant="outlined" type="submit">
-                Login
-            </Button>
-            <TextInput label="Test"/>
-        </Box>
+            <Button type="submit">Submit</Button>
+        </form>
     )
 }
