@@ -2,6 +2,7 @@ import { Box, Button, TextField } from "@mui/material"
 import { useState } from "react"
 import { useAppDispatch } from "../../app/hooks"
 import { fetchToken } from "./userSlice"
+import { TextInput } from "@mantine/core"
 
 
 
@@ -57,6 +58,7 @@ export const LoginPage = () => {
             <Button variant="outlined" type="submit">
                 Login
             </Button>
+            <TextInput label="Test"/>
         </Box>
     )
 }

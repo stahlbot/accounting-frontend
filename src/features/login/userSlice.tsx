@@ -7,24 +7,28 @@ interface UserState {
     username: string,
     access: string,
     refresh: string,
-    status: string
+    status: string,
+    id: string
 }
 
 interface ResponseState {
     refresh: string,
-    access: string
+    access: string,
+    username: string,
+    id: number
 }
 
 interface InputState {
     username: string,
-    password: string
+    password: string,
 }
 
 const initialState: UserState = {
     username: '',
     access: '', 
     refresh: '', 
-    status: 'idle'
+    status: 'idle',
+    id: ''
 }
 
 const userSlice = createSlice({
@@ -41,6 +45,8 @@ const userSlice = createSlice({
             const data = action.payload
             state.access = data.access
             state.refresh = data.refresh
+            state.id = data.id.toString()
+            state.username = data.username
         })
         .addCase(fetchToken.rejected, (state) => {
             state.status = 'failed'
