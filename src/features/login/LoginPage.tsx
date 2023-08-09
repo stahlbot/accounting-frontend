@@ -18,19 +18,22 @@ export const LoginPage = () => {
         },
       })
 
+    const canSave: boolean = Object.values(form.values).every(Boolean) && loginRequestStatus === 'idle'
+
     const submit = form.onSubmit(
         async ({password, username}) => {
-            try {
-                console.log(`username: ${password}, password: ${username}`)
-    
-                setLoginRequestStatus('pending')
-                await dispatch(fetchToken({username, password})).unwrap()
-                
-    
-            } catch (err){
-                console.error('Failed to save the post: ', err)
-            } finally {
-                setLoginRequestStatus('idle')
+            if (canSave) {
+                try {
+                    setLoginRequestStatus('pending')
+                    await dispatch(fetchToken({username, password})).unwrap()
+                    .then()
+                    
+        
+                } catch (err){
+                    console.error('Failed to login: ', err)
+                } finally {
+                    setLoginRequestStatus('idle')
+                }
             }
         }
     )
@@ -47,7 +50,12 @@ export const LoginPage = () => {
                 label="Password"
                 {...form.getInputProps('password')}
             />
-            <Button type="submit">Submit</Button>
+            <Button 
+                type="submit" 
+                disabled={!canSave}
+                >
+                Login
+            </Button>
         </form>
     )
 }
