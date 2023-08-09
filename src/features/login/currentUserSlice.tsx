@@ -31,8 +31,8 @@ const initialState: UserState = {
     id: ''
 }
 
-const userSlice = createSlice({
-    name: 'user',
+const currentUserSlice = createSlice({
+    name: 'currentUser',
     initialState,
     reducers: {},
     extraReducers(builder) {
@@ -65,6 +65,6 @@ export const fetchToken = createAsyncThunk(
 )
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectUser = (state: RootState) => state.user.username
+export const selectUser = (state: RootState) => state.currentUser.username
 
-export default userSlice.reducer
+export default currentUserSlice.reducer
