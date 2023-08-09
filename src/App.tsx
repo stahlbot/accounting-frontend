@@ -8,7 +8,7 @@ import { LoginPage } from './features/login/LoginPage'
 import MainHeader from './features/header/MainHeader'
 import { UserPage } from './features/user/UserPage'
 import { useSelector } from 'react-redux'
-import { selectUser } from './features/login/userSlice'
+import { selectUser } from './features/login/currentUserSlice'
 // import './App.css'
 
 

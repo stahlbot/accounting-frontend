@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createStyles, Header, Container, Group, rem, Title } from '@mantine/core';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../login/userSlice';
+import { selectUser } from '../login/currentUserSlice';
 
 const useStyles = createStyles((theme) => ({
   header: {

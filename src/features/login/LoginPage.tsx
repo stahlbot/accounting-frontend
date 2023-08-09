@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useAppDispatch } from "../../app/hooks"
-import { fetchToken } from "./userSlice"
+import { fetchToken } from "./currentUserSlice"
 import { Button, Container, Paper, PasswordInput, TextInput, Title } from "@mantine/core"
 import { useForm } from '@mantine/form'
 import { useNavigate } from "react-router-dom"
