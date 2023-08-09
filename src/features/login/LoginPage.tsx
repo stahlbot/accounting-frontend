@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useAppDispatch } from "../../app/hooks"
 import { fetchToken } from "./userSlice"
-import { Button, PasswordInput, TextInput } from "@mantine/core"
+import { Button, Container, Paper, PasswordInput, TextInput, Title } from "@mantine/core"
 import { useForm } from '@mantine/form'
 
 
@@ -40,22 +40,34 @@ export const LoginPage = () => {
 
     return (
         <form onSubmit={submit}>
-            <TextInput
-                placeholder="Username"
-                label="Username"
-                {...form.getInputProps('username')}
-            />
-            <PasswordInput
-                placeholder="Password"
-                label="Password"
-                {...form.getInputProps('password')}
-            />
-            <Button 
-                type="submit" 
-                disabled={!canSave}
-                >
-                Login
-            </Button>
+            <Container size={420} my={40}>
+                <Title align="center">
+                    Login
+                </Title>
+                <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+                    <TextInput
+                        placeholder="Username"
+                        label="Username"
+                        required
+                        {...form.getInputProps('username')}
+                    />
+                    <PasswordInput
+                        placeholder="Password"
+                        label="Password"
+                        mt="md"
+                        required
+                        {...form.getInputProps('password')}
+                    />
+                    <Button 
+                        type="submit" 
+                        disabled={!canSave}
+                        mt={"md"}
+                        fullWidth
+                        >
+                        Login
+                    </Button>
+                </Paper>
+            </Container>
         </form>
     )
 }
