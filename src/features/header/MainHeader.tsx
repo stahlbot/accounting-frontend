@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { createStyles, Header, Container, Group, Burger, rem, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { createStyles, Header, Container, Group, rem, Title } from '@mantine/core';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../login/userSlice';
-// import { MantineLogo } from '@mantine/ds';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -18,12 +16,6 @@ const useStyles = createStyles((theme) => ({
       display: 'none',
     },
   },
-
-  // burger: {
-  //   [theme.fn.largerThan('xs')]: {
-  //     display: 'none',
-  //   },
-  // },
 
   link: {
     display: 'block',
@@ -60,7 +52,6 @@ const links: Links[] = [
 ]
 
 export default function MainHeader(props) {
-  // const [opened, { toggle }] = useDisclosure(false);
   const username = useSelector(selectUser)
   const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
@@ -83,7 +74,6 @@ export default function MainHeader(props) {
     <>
       <Header height={60} mb={10}>
         <Container className={classes.header}>
-          {/* <MantineLogo size={28} /> */}
           <Title align="center">
             Accounting App 🤓
           </Title>
@@ -92,7 +82,6 @@ export default function MainHeader(props) {
             {items}
           </Group>
           }
-          {/* <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" /> */}
           {username}
         </Container>
       </Header>
