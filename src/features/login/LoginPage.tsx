@@ -40,7 +40,7 @@ export const LoginPage = () => {
 
     return (
         <form onSubmit={submit}>
-            <Container size={420} my={40}>
+            <Container size={420}>
                 <Title align="center">
                     Login
                 </Title>

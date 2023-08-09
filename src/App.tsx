@@ -5,6 +5,7 @@ import {
   Navigate,
 } from 'react-router-dom'
 import { LoginPage } from './features/login/LoginPage'
+import MainHeader from './features/header/MainHeader'
 // import './App.css'
 
 
@@ -12,12 +13,14 @@ import { LoginPage } from './features/login/LoginPage'
 function App() {
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" Component={LoginPage}/>
-      </Routes>
-      <Navigate to="/login"/>
-    </Router>
+    <MainHeader>
+      <Router>
+        <Routes>
+          <Route path="/login" Component={LoginPage}/>
+        </Routes>
+        <Navigate to="/login"/>
+      </Router>
+    </MainHeader>
   )
 }
 
