@@ -7,8 +7,6 @@ export type ProtectedRouteProps = {
   };
   
   export default function ProtectedRoute({isAuthenticated, authenticationPath, outlet}: ProtectedRouteProps) {
-    console.log(isAuthenticated)
-    console.log(authenticationPath)
     if(isAuthenticated) {
       return outlet;
     } else {

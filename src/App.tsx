@@ -26,31 +26,24 @@ function App() {
   // const authenticationPath = 'login'
 
   useEffect(() => {
+    console.log(isAuthenticated)
     dispatch(loginFromLocalStorage())
-    // const iisAuthenticated = localStorage.getItem("isAuthenticated")!
-    // const iisAuthenticated = useSelector(selectISAuthenticated)
-    // console.log(iisAuthenticated)
-
-    // setStorageChecked(true)
-    // if (iisAuthenticated) {
-    //   setIsAuthenticated(true)
-    // } else {
-    //   setIsAuthenticated(false)
-    // }
-     
+    // console.log(isAuthenticated) 
   },)
 
   useEffect(() => {
+    // console.log(isAuthenticated)
     setStorageChecked(true)
   }, [isAuthenticated])
 
   
 
   return (
-    storageChecked && <MainHeader>
-      <Router>
-        <Routes>
-          <Route path='/login' element={<LoginPage/>}/>
+    storageChecked && <Router>
+      <MainHeader>
+      <Routes>
+          {/* Redirect to userpage when already logged in  */}
+          <Route path='/login' element={<ProtectedRoute isAuthenticated={!isAuthenticated} authenticationPath='/user' outlet={<LoginPage />} />} />
           <Route path='/user'element={<ProtectedRoute isAuthenticated={isAuthenticated} authenticationPath='/login' outlet={<UserPage />} />} />
             {/* <Route element={<ProtectedRoute user={user} />}>
               <Route path="/user" Component={UserPage}/>
@@ -58,8 +51,9 @@ function App() {
   <Route path="/login" Component={LoginPage}/> */}
         </Routes>
         {/* <Navigate to="/login"/> */}
+        </MainHeader>
       </Router>
-    </MainHeader>
+    
   )
 }
 

@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { createStyles, Header, Container, Group, rem, Title } from '@mantine/core';
+import { createStyles, Header, Container, Group, rem, Title, Button } from '@mantine/core';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../login/currentUserSlice';
+import { Link, redirect, useNavigate } from 'react-router-dom';
+
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -57,17 +59,26 @@ export default function MainHeader(props) {
   const { classes, cx } = useStyles();
 
   const items = links.map((link) => (
-    <a
-      key={link.label}
-      href={link.link}
-      className={cx(classes.link, { [classes.linkActive]: active === link.link })}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(link.link);
-      }}
+    // <a
+    //   key={link.label}
+    //   href={link.link}
+    //   className={cx(classes.link, { [classes.linkActive]: active === link.link })}
+    //   onClick={(event) => {
+    //     event.preventDefault();
+    //     setActive(link.link);
+    //     navigate(link.link)
+    //   }}
+    // >
+    //   {link.label}
+    // </a>
+    <Button
+      component={Link}
+      to={link.link}
+      variant='subtle'
+      key={link.link}
     >
       {link.label}
-    </a>
+    </Button>
   ));
 
   return (
@@ -78,7 +89,7 @@ export default function MainHeader(props) {
             Accounting App 🤓
           </Title>
           {username &&
-          <Group spacing={5} className={classes.links}>
+          <Group spacing={5}>
             {items}
           </Group>
           }
