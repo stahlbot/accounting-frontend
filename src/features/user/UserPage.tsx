@@ -9,7 +9,6 @@ export const UserPage = () => {
     const usersStatus = useSelector<RootState, string>(state => state.users.status)
     const dispatch = useAppDispatch()
     useEffect(() => {
-        console.log("test")
         if (usersStatus === 'idle') {
             dispatch(fetchUsers())
         }

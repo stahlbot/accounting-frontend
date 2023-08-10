@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { useAppDispatch } from "../../app/hooks"
-import { fetchToken } from "./currentUserSlice"
+import { login, selectISAuthenticated } from "./currentUserSlice"
 import { Button, Container, Paper, PasswordInput, TextInput, Title } from "@mantine/core"
 import { useForm } from '@mantine/form'
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
 
 
 
@@ -12,6 +13,8 @@ export const LoginPage = () => {
     const navigate = useNavigate()
 
     const [loginRequestStatus, setLoginRequestStatus] = useState('idle')
+    // const isAuthenticated = useSelector(selectISAuthenticated)
+    const isAuthenticated = localStorage.getItem("isAuthenticated")
 
     const form = useForm({
         initialValues: {
@@ -27,7 +30,8 @@ export const LoginPage = () => {
             if (canSave) {
                 try {
                     setLoginRequestStatus('pending')
-                    await dispatch(fetchToken({username, password})).unwrap()
+                    await dispatch(login({username, password})).unwrap()
+                    console.log(isAuthenticated)
                     navigate('/user')
                     
         

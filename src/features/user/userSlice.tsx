@@ -1,11 +1,7 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 // import type { RootState } from '../../app/store'
-import axios from 'axios'
-import configureAxios from '../../api/api'
-import { useSelector } from 'react-redux'
-import { selectAccessToken } from '../login/currentUserSlice'
-import { RootState } from '../../app/store'
+import { axiosInstance } from '../../api/api'
 
 
 type User = { id: string, username: string}
@@ -46,17 +42,11 @@ export default usersSlice.reducer
 
 export const fetchUsers = createAsyncThunk(
     'users/fetchUsers', 
-    async (_, {getState}) => {
+    async () => {
 
-        // third axios parameter is config that includes headers
-        console.log(1)
-        // const token = useSelector<RootState, string>(state => state.currentUser.access)
-        const state = getState() as RootState;
-        const token = state.currentUser.access
-        console.log(2)
-        // const axiosInstance = configureAxios(token)
-        // const response = await axiosInstance.get("/api/v1/users/")
-        const response = await axios.get("/api/v1/users", {headers: {Authorization: `Bearer ${token}`}})
+
+        const response = await axiosInstance.get("/api/v1/users/")
+        // const response = await axios.get("/api/v1/users", {headers: {Authorization: `Bearer ${token}`}})
         return response.data
     }
 )

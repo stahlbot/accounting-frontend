@@ -8,7 +8,8 @@ interface UserState {
     access: string,
     refresh: string,
     status: string,
-    id: string
+    id: string,
+    isAuthenticated: boolean
 }
 
 interface ResponseState {
@@ -28,35 +29,81 @@ const initialState: UserState = {
     access: '', 
     refresh: '', 
     status: 'idle',
-    id: ''
+    id: '',
+    isAuthenticated: false
 }
 
 const currentUserSlice = createSlice({
     name: 'currentUser',
     initialState,
-    reducers: {},
+    reducers: {
+        loginFromLocalStorage(state: UserState, _action: PayloadAction) {
+            const accesss = localStorage.getItem("access")
+            const refresh = localStorage.getItem("access")
+            const id = localStorage.getItem("userId")
+            const username = localStorage.getItem("username")
+            if (accesss && refresh && id && username) {
+                state.access = accesss
+                state.refresh = refresh
+                state.id = refresh
+                state.username = username
+                state.isAuthenticated = true
+            }
+
+        }
+    },
     extraReducers(builder) {
         builder
-        .addCase(fetchToken.pending, (state) => {
+        .addCase(login.pending, (state) => {
             state.status = 'loading'
         })
-        .addCase(fetchToken.fulfilled, (state, action: PayloadAction<ResponseState>) => {
+        .addCase(login.fulfilled, (state, action: PayloadAction<ResponseState>) => {
             state.status = 'succeeded'
             const data = action.payload
             state.access = data.access
             state.refresh = data.refresh
             state.id = data.id.toString()
             state.username = data.username
+            state.isAuthenticated = true
+
+            localStorage.setItem('access', data.access)
+            localStorage.setItem('refresh', data.refresh)
+            localStorage.setItem('username', data.username)
+            localStorage.setItem('userId', data.id.toString())
+
+            // // respone.headers.set("set-cookie", 
+            // cookie.serialize(
+            //     'access', 
+            //     data.access, 
+            //     {
+            //         httpOnly: true,
+            //         secure: false,
+            //         maxAge: 60 * 30, // TODO: change to jwt setting in django
+            //         sameSite: 'strict',
+            //         path: '/api/'
+            //     })
+            
+            // // )
+            // cookie.serialize(
+            //     'access', 
+            //     data.refresh, 
+            //     {
+            //         httpOnly: true,
+            //         secure: false,
+            //         maxAge: 60 * 60 * 24, // TODO: change to jwt setting in django
+            //         sameSite: 'strict',
+            //         path: '/api/'
+            //     })
         })
-        .addCase(fetchToken.rejected, (state) => {
+        .addCase(login.rejected, (state) => {
             state.status = 'failed'
         })
     }
 })
 
 
-export const fetchToken = createAsyncThunk(
-    'currentUser/fetchToken', 
+export const login = createAsyncThunk(
+    'currentUser/login', 
     async (credentials: InputState) => {
         // third axios parameter is config that includes headers
         const response = await axios.post("/api/token/", credentials)
@@ -66,7 +113,9 @@ export const fetchToken = createAsyncThunk(
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectUser = (state: RootState) => state.currentUser.username
-
 export const selectAccessToken = (state: RootState) => state.currentUser.access
+export const selectISAuthenticated = (state: RootState) => state.currentUser.isAuthenticated
+
+export const { loginFromLocalStorage } = currentUserSlice.actions
 
 export default currentUserSlice.reducer

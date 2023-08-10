@@ -8,24 +8,54 @@ import { LoginPage } from './features/login/LoginPage'
 import MainHeader from './features/header/MainHeader'
 import { UserPage } from './features/user/UserPage'
 import { useSelector } from 'react-redux'
-import { selectUser } from './features/login/currentUserSlice'
+import { loginFromLocalStorage, selectISAuthenticated, selectUser } from './features/login/currentUserSlice'
+import { useEffect, useState } from 'react'
+import { useAppDispatch } from './app/hooks'
+import ProtectedRoute, { ProtectedRouteProps } from './features/login/ProtectedRoute'
 // import './App.css'
 
 
 
 function App() {
-  const user = useSelector(selectUser)
+  const dispatch = useAppDispatch()
+  const isAuthenticated = useSelector(selectISAuthenticated)
+  // console.log(`istauth ${isAuthenticated}`)
+  const [storageChecked, setStorageChecked] = useState(false)
+  // let defaultProtectedRouteProps: Omit<ProtectedRouteProps, 'outlet'>
+  // const [isAuthenticated, setIsAuthenticated] = useState(false)
+  // const authenticationPath = 'login'
+
+  useEffect(() => {
+    dispatch(loginFromLocalStorage())
+    // const iisAuthenticated = localStorage.getItem("isAuthenticated")!
+    // const iisAuthenticated = useSelector(selectISAuthenticated)
+    // console.log(iisAuthenticated)
+
+    // setStorageChecked(true)
+    // if (iisAuthenticated) {
+    //   setIsAuthenticated(true)
+    // } else {
+    //   setIsAuthenticated(false)
+    // }
+     
+  },)
+
+  useEffect(() => {
+    setStorageChecked(true)
+  }, [isAuthenticated])
+
+  
 
   return (
-    <MainHeader>
+    storageChecked && <MainHeader>
       <Router>
         <Routes>
-          {user ?
-            <Route index element={<Navigate to="/user"/>}/>:
-            <Route index element={<Navigate to="/login"/>}/>
-          }
-          <Route path="/login" Component={LoginPage}/>
-          <Route path="/user" Component={UserPage}/>
+          <Route path='/login' element={<LoginPage/>}/>
+          <Route path='/user'element={<ProtectedRoute isAuthenticated={isAuthenticated} authenticationPath='/login' outlet={<UserPage />} />} />
+            {/* <Route element={<ProtectedRoute user={user} />}>
+              <Route path="/user" Component={UserPage}/>
+            </Route>
+  <Route path="/login" Component={LoginPage}/> */}
         </Routes>
         {/* <Navigate to="/login"/> */}
       </Router>
