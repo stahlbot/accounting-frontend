@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { createStyles, Header, Container, Group, rem, Title, Button } from '@mantine/core';
 import { useSelector } from 'react-redux';
-import { selectUser } from '../login/currentUserSlice';
+import { logout, selectISAuthenticated, selectUser } from '../login/currentUserSlice';
 import { Link, redirect, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../app/hooks';
 
 
 const useStyles = createStyles((theme) => ({
@@ -54,9 +55,10 @@ const links: Links[] = [
 ]
 
 export default function MainHeader(props) {
-  const username = useSelector(selectUser)
+  const isAuthenticated = useSelector(selectISAuthenticated)
   const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
+  const dispatch = useAppDispatch()
 
   const items = links.map((link) => (
     // <a
@@ -81,6 +83,10 @@ export default function MainHeader(props) {
     </Button>
   ));
 
+  const handleLogout = () => {
+    dispatch(logout())
+  }
+
   return (
     <>
       <Header height={60} mb={10}>
@@ -88,12 +94,17 @@ export default function MainHeader(props) {
           <Title align="center">
             Accounting App 🤓
           </Title>
-          {username &&
+          {isAuthenticated &&
+          <>
           <Group spacing={5}>
             {items}
           </Group>
+          
+          <Button onClick={() => handleLogout()}>
+            Logout
+          </Button>
+          </>
           }
-          {username}
         </Container>
       </Header>
       {props.children}

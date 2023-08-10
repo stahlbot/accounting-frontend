@@ -49,7 +49,10 @@ const currentUserSlice = createSlice({
                 state.username = username
                 state.isAuthenticated = true
             }
-
+        },
+        logout(state: UserState, _action: PayloadAction){
+            localStorage.clear()
+            state.isAuthenticated = false
         }
     },
     extraReducers(builder) {
@@ -116,6 +119,6 @@ export const selectUser = (state: RootState) => state.currentUser.username
 export const selectAccessToken = (state: RootState) => state.currentUser.access
 export const selectISAuthenticated = (state: RootState) => state.currentUser.isAuthenticated
 
-export const { loginFromLocalStorage } = currentUserSlice.actions
+export const { loginFromLocalStorage, logout } = currentUserSlice.actions
 
 export default currentUserSlice.reducer
