@@ -18,6 +18,7 @@ import { useAppDispatch } from "./app/hooks";
 import ProtectedRoute, {
   ProtectedRouteProps,
 } from "./features/login/ProtectedRoute";
+import { ClientPage } from "./features/clients/ClientPage";
 // import './App.css'
 
 function App() {
@@ -63,6 +64,16 @@ function App() {
                   isAuthenticated={isAuthenticated}
                   authenticationPath="/login"
                   outlet={<UserPage />}
+                />
+              }
+            />
+            <Route
+              path="/clients"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  authenticationPath="/login"
+                  outlet={<ClientPage />}
                 />
               }
             />
