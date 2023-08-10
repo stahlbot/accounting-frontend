@@ -56,7 +56,7 @@ const currentUserSlice = createSlice({
 
 
 export const fetchToken = createAsyncThunk(
-    'user/fetchToken', 
+    'currentUser/fetchToken', 
     async (credentials: InputState) => {
         // third axios parameter is config that includes headers
         const response = await axios.post("/api/token/", credentials)
@@ -66,5 +66,7 @@ export const fetchToken = createAsyncThunk(
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectUser = (state: RootState) => state.currentUser.username
+
+export const selectAccessToken = (state: RootState) => state.currentUser.access
 
 export default currentUserSlice.reducer
