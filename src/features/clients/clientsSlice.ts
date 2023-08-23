@@ -37,17 +37,31 @@ const clientsSlice = createSlice({
       })
       .addCase(
         fetchClients.fulfilled,
-        (state, action: PayloadAction<ClientState[]>) => {
-          const keyMap = action.payload.map(
-            ({ created_at: date, ...rest }) => ({ ...rest, createdAt: date })
-          );
+        (state, action: PayloadAction<Client[]>) => {
           state.status = "succeeded";
-          clientsAdapter.upsertMany(state, keyMap);
+          clientsAdapter.upsertMany(state, action.payload);
         }
       )
       .addCase(fetchClients.rejected, (state) => {
         state.status = "failed";
-      });
+      })
+      //   .addCase(addClient.pending, (state) => {
+      //     state.status = "loading";
+      //   })
+      .addCase(
+        addClient.fulfilled,
+        clientsAdapter.addOne
+        // (state, action: PayloadAction<ClientState>) => {
+        //   const keyMap = action.payload.map(
+        //     ({ created_at: date, ...rest }) => ({ ...rest, createdAt: date })
+        //   );
+        //   state.status = "succeeded";
+        //   clientsAdapter.upsertMany(state, keyMap);
+        // }
+      );
+    //   .addCase(addClient.rejected, (state) => {
+    //     state.status = "failed";
+    //   });
   },
 });
 
@@ -59,13 +73,13 @@ export const {
   selectIds: selectClientIds,
 } = clientsAdapter.getSelectors((state: RootState) => state.clients);
 
-interface ClientState {
-  id: string;
-  name: string;
-  number: string;
-  created_at: string;
-  clerk: string;
-}
+// interface ClientState {
+//   id: string;
+//   name: string;
+//   number: string;
+//   created_at: string;
+//   clerk: string;
+// }
 
 // interface ClientsState {
 //     id: string;
@@ -76,7 +90,19 @@ interface ClientState {
 export const fetchClients = createAsyncThunk(
   "clients/fetchClients",
   async () => {
-    const response = await axiosInstance.get("/api/v1/clients");
+    const response = await axiosInstance.get("/api/v1/clients/");
+    return response.data;
+  }
+);
+
+export const addClient = createAsyncThunk(
+  "clients/addClient",
+  async (client: { name: string; number: string; clerk: string }) => {
+    // client = {
+    //   ...client,
+    //   // createdAt:
+    // };
+    const response = await axiosInstance.post("/api/v1/clients/", client);
     return response.data;
   }
 );
