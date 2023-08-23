@@ -2,21 +2,39 @@ import { Button, Select, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useSelector } from "react-redux";
 import { selectAllUsers } from "../user/userSlice";
-import { useAppDispatch } from "../../app/hooks";
-import { addClient } from "./clientsSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { addClient, editClient, selectClientById } from "./clientsSlice";
 
-const AddClientForm = ({ close }) => {
+interface Props {
+  close: Function;
+  clientId?: string;
+}
+
+const AddClientForm = ({ close, clientId }: Props) => {
   const dispatch = useAppDispatch();
-  const form = useForm({
-    initialValues: {
-      name: "",
-      number: "",
-      clerk: "",
-    },
-  });
+  let form;
+  let client;
+  if (!clientId) {
+    form = useForm({
+      initialValues: {
+        name: "",
+        number: "",
+        clerk: "",
+      },
+    });
+  } else {
+    client = useAppSelector((state) => selectClientById(state, clientId));
+    form = useForm({
+      initialValues: { ...client },
+    });
+  }
 
   const submit = form.onSubmit(async ({ name, number, clerk }) => {
-    await dispatch(addClient({ name, number, clerk })).unwrap();
+    if (!clientId) {
+      await dispatch(addClient({ name, number, clerk })).unwrap();
+    } else {
+      await dispatch(editClient({ ...client, name, number, clerk })).unwrap();
+    }
     // console.log(client);
     close();
   });

@@ -1,14 +1,7 @@
 import { Tabs, Text } from "@mantine/core";
 import { useAppSelector } from "../../app/hooks";
 import { selectClientById } from "./clientsSlice";
-import { Params, useParams } from "react-router-dom";
-import { EntityId } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
-
-interface Param {
-  clientId: EntityId;
-}
+import { useParams } from "react-router-dom";
 
 export const ClientPage = () => {
   const params = useParams();

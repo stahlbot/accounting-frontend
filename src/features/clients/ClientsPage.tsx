@@ -1,8 +1,8 @@
 import ClientRow from "./ClientRow";
 import { useSelector } from "react-redux";
-import { fetchClients, selectClientIds } from "./clientsSlice";
+import { deleteClient, fetchClients, selectClientIds } from "./clientsSlice";
 import { useAppDispatch } from "../../app/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PowerTable from "../tables/PowerTable";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal } from "@mantine/core";
@@ -15,6 +15,7 @@ const ClientsPage = () => {
   const clients = useSelector(selectClientIds);
   const [opened, { open, close }] = useDisclosure(false);
   const navigate = useNavigate();
+  const [clientEdited, setClientEdited] = useState<string>("");
 
   useEffect(() => {
     dispatch(fetchClients());
@@ -27,30 +28,37 @@ const ClientsPage = () => {
     { accessorkey: "clerk", header: "Clerk" },
   ];
 
-  const onDelete = (id) => {
-    console.log(`"delete" ${id}`);
+  const onDelete = async (id) => {
+    await dispatch(deleteClient(id)).unwrap();
   };
 
   const onOpen = (id) => {
-    console.log(`"open" ${id}`);
     navigate(`/clients/${id}`);
   };
 
   const onEdit = (id) => {
-    console.log(`"edit" ${id}`);
+    setClientEdited(id);
+    open();
   };
+
+  //   useEffect(() => {
+  //     if (!opened) setClientEdited("");
+  //   }, [opened]);
 
   return (
     <>
       <Modal opened={opened} onClose={close} title="Add Client">
-        <AddClientForm close={close} />
+        <AddClientForm close={close} clientId={clientEdited} />
       </Modal>
       <PowerTable
         columns={columns}
         RowTemplate={ClientRow}
         data={clients}
         onDelete={onDelete}
-        onAdd={open}
+        onAdd={() => {
+          setClientEdited("");
+          open();
+        }}
         onOpen={onOpen}
         onEdit={onEdit}
       ></PowerTable>

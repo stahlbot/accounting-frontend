@@ -58,7 +58,9 @@ const clientsSlice = createSlice({
         //   state.status = "succeeded";
         //   clientsAdapter.upsertMany(state, keyMap);
         // }
-      );
+      )
+      .addCase(deleteClient.fulfilled, clientsAdapter.removeOne)
+      .addCase(editClient.fulfilled, clientsAdapter.updateOne);
     //   .addCase(addClient.rejected, (state) => {
     //     state.status = "failed";
     //   });
@@ -103,6 +105,25 @@ export const addClient = createAsyncThunk(
     //   // createdAt:
     // };
     const response = await axiosInstance.post("/api/v1/clients/", client);
+    return response.data;
+  }
+);
+
+export const deleteClient = createAsyncThunk(
+  "clients/deleteClient",
+  async (clientId: string) => {
+    const response = await axiosInstance.delete(`/api/v1/clients/${clientId}`);
+    return clientId;
+  }
+);
+
+export const editClient = createAsyncThunk(
+  "clients/editClient",
+  async (client: Client) => {
+    const response = await axiosInstance.patch(
+      `/api/v1/clients/${client.id}/`,
+      client
+    );
     return response.data;
   }
 );
