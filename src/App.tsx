@@ -13,6 +13,8 @@ import ProtectedRoute from "./features/login/ProtectedRoute";
 import ClientsPage from "./features/clients/ClientsPage";
 import { fetchUsers } from "./features/user/userSlice";
 import { RootState } from "./app/store";
+import { ClientPage } from "./features/clients/ClientPage";
+
 // import './App.css'
 
 function App() {
@@ -74,6 +76,16 @@ function App() {
                   isAuthenticated={isAuthenticated}
                   authenticationPath="/login"
                   outlet={<ClientsPage />}
+                />
+              }
+            />
+            <Route
+              path="/clients/:clientId"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  authenticationPath="/login"
+                  outlet={<ClientPage />}
                 />
               }
             />

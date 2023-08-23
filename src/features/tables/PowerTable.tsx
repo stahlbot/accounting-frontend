@@ -1,7 +1,7 @@
 import { ActionIcon, Button, Checkbox, Flex, Table, rem } from "@mantine/core";
 import { EntityId } from "@reduxjs/toolkit";
 import { useState } from "react";
-import { Plus, Trash } from "tabler-icons-react";
+import { Link, Edit, Plus, Trash } from "tabler-icons-react";
 
 interface Props {
   columns: {
@@ -12,9 +12,19 @@ interface Props {
   data: EntityId[];
   onDelete?: Function;
   onAdd?: Function;
+  onOpen?: Function;
+  onEdit?: Function;
 }
 
-const PowerTable = ({ columns, RowTemplate, data, onDelete, onAdd }: Props) => {
+const PowerTable = ({
+  columns,
+  RowTemplate,
+  data,
+  onDelete,
+  onAdd,
+  onOpen,
+  onEdit,
+}: Props) => {
   const [selection, setSelection] = useState<EntityId[]>([]);
   const toggleRow = (id: EntityId) =>
     setSelection((current) =>
@@ -25,14 +35,40 @@ const PowerTable = ({ columns, RowTemplate, data, onDelete, onAdd }: Props) => {
   const toggleAll = () =>
     setSelection((current) => (current.length === data.length ? [] : data));
 
+  const deleteSelected = () => {
+    selection.forEach((id) => onDelete!(id));
+  };
+
   const rows = data.map((id) => (
     <RowTemplate key={id} id={id}>
       <td>
-        <Checkbox
-          checked={selection.includes(id)}
-          onChange={() => toggleRow(id)}
-          transitionDuration={0}
-        />
+        <Flex gap={"sm"} justify="center" align={"center"}>
+          <Checkbox
+            checked={selection.includes(id)}
+            onChange={() => toggleRow(id)}
+            transitionDuration={0}
+            size="sm"
+          />
+          {onOpen && (
+            <ActionIcon variant="default" size="sm" onClick={() => onOpen(id)}>
+              <Link />
+            </ActionIcon>
+          )}
+          {onEdit && (
+            <ActionIcon variant="default" size="sm" onClick={() => onEdit(id)}>
+              <Edit />
+            </ActionIcon>
+          )}
+          {onDelete && (
+            <ActionIcon
+              variant="default"
+              size="sm"
+              onClick={() => onDelete(id)}
+            >
+              <Trash />
+            </ActionIcon>
+          )}
+        </Flex>
       </td>
     </RowTemplate>
   ));
@@ -51,7 +87,7 @@ const PowerTable = ({ columns, RowTemplate, data, onDelete, onAdd }: Props) => {
             variant="default"
             size={"md"}
             color="red"
-            onClick={() => onDelete()}
+            onClick={() => deleteSelected()}
           >
             <Trash />
           </ActionIcon>

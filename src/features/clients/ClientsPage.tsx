@@ -7,12 +7,14 @@ import PowerTable from "../tables/PowerTable";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal } from "@mantine/core";
 import AddClientForm from "./AddClientForm";
+import { useNavigate } from "react-router-dom";
 
 const ClientsPage = () => {
   // const rows =
   const dispatch = useAppDispatch();
   const clients = useSelector(selectClientIds);
   const [opened, { open, close }] = useDisclosure(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchClients());
@@ -25,8 +27,17 @@ const ClientsPage = () => {
     { accessorkey: "clerk", header: "Clerk" },
   ];
 
-  const onDelete = () => {
-    console.log("delete");
+  const onDelete = (id) => {
+    console.log(`"delete" ${id}`);
+  };
+
+  const onOpen = (id) => {
+    console.log(`"open" ${id}`);
+    navigate(`/clients/${id}`);
+  };
+
+  const onEdit = (id) => {
+    console.log(`"edit" ${id}`);
   };
 
   return (
@@ -40,6 +51,8 @@ const ClientsPage = () => {
         data={clients}
         onDelete={onDelete}
         onAdd={open}
+        onOpen={onOpen}
+        onEdit={onEdit}
       ></PowerTable>
     </>
   );

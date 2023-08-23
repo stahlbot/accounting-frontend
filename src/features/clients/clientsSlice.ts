@@ -10,7 +10,7 @@ import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
 
 type Client = {
-  id: EntityId;
+  id: string;
   name: string;
   number: string;
   createdAt: string;
