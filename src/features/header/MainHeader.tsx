@@ -108,7 +108,7 @@ export default function MainHeader(props) {
     <>
       <Header height={60} mb={10}>
         <Container className={classes.header}>
-          <Title align="center">Accounting App 🤓</Title>
+          <Title align="center">Accounting App</Title>
           {isAuthenticated && (
             <>
               <Group spacing={5}>{items}</Group>

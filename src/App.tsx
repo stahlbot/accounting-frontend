@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LoginPage } from "./features/login/LoginPage";
 import MainHeader from "./features/header/MainHeader";
 import { UserPage } from "./features/user/UserPage";
@@ -11,14 +6,13 @@ import { useSelector } from "react-redux";
 import {
   loginFromLocalStorage,
   selectISAuthenticated,
-  selectUser,
 } from "./features/login/currentUserSlice";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "./app/hooks";
-import ProtectedRoute, {
-  ProtectedRouteProps,
-} from "./features/login/ProtectedRoute";
-import { ClientPage } from "./features/clients/ClientPage";
+import ProtectedRoute from "./features/login/ProtectedRoute";
+import ClientsPage from "./features/clients/ClientsPage";
+import { fetchUsers } from "./features/user/userSlice";
+import { RootState } from "./app/store";
 // import './App.css'
 
 function App() {
@@ -30,10 +24,16 @@ function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false)
   // const authenticationPath = 'login'
 
+  const usersStatus = useSelector<RootState, string>(
+    (state) => state.users.status
+  );
+
   useEffect(() => {
-    console.log(isAuthenticated);
     dispatch(loginFromLocalStorage());
     // console.log(isAuthenticated)
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
   });
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function App() {
                 <ProtectedRoute
                   isAuthenticated={isAuthenticated}
                   authenticationPath="/login"
-                  outlet={<ClientPage />}
+                  outlet={<ClientsPage />}
                 />
               }
             />

@@ -6,6 +6,7 @@ import {
 import type { PayloadAction } from "@reduxjs/toolkit";
 // import type { RootState } from '../../app/store'
 import { axiosInstance } from "../../api/api";
+import { RootState } from "../../app/store";
 
 type User = { id: string; username: string };
 const usersAdapter = createEntityAdapter<User>({
@@ -44,6 +45,12 @@ const usersSlice = createSlice({
 });
 
 export default usersSlice.reducer;
+
+export const {
+  selectAll: selectAllUsers,
+  selectById: selectUserById,
+  selectIds: selectUserIds,
+} = usersAdapter.getSelectors((state: RootState) => state.users);
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   const response = await axiosInstance.get("/api/v1/users/");
