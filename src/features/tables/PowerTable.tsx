@@ -1,5 +1,6 @@
-import { ActionIcon, Button, Flex, Table } from "@mantine/core";
+import { ActionIcon, Button, Checkbox, Flex, Table, rem } from "@mantine/core";
 import { EntityId } from "@reduxjs/toolkit";
+import { useState } from "react";
 import { Plus, Trash } from "tabler-icons-react";
 
 interface Props {
@@ -7,14 +8,34 @@ interface Props {
     accessorkey: string;
     header: string;
   }[];
-  RowTemplate: React.ComponentType<{ id: EntityId }>;
+  RowTemplate: React.ComponentType<{ id: EntityId; children }>;
   data: EntityId[];
   onDelete?: Function;
   onAdd?: Function;
 }
 
 const PowerTable = ({ columns, RowTemplate, data, onDelete, onAdd }: Props) => {
-  const rows = data.map((id) => <RowTemplate key={id} id={id} />);
+  const [selection, setSelection] = useState<EntityId[]>([]);
+  const toggleRow = (id: EntityId) =>
+    setSelection((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : [...current, id]
+    );
+  const toggleAll = () =>
+    setSelection((current) => (current.length === data.length ? [] : data));
+
+  const rows = data.map((id) => (
+    <RowTemplate key={id} id={id}>
+      <td>
+        <Checkbox
+          checked={selection.includes(id)}
+          onChange={() => toggleRow(id)}
+          transitionDuration={0}
+        />
+      </td>
+    </RowTemplate>
+  ));
 
   return (
     <>
@@ -44,6 +65,16 @@ const PowerTable = ({ columns, RowTemplate, data, onDelete, onAdd }: Props) => {
       <Table>
         <thead>
           <tr key="header">
+            <th style={{ width: rem(40) }}>
+              <Checkbox
+                onChange={toggleAll}
+                checked={selection.length === data.length}
+                indeterminate={
+                  selection.length > 0 && selection.length !== data.length
+                }
+                transitionDuration={0}
+              />
+            </th>
             {columns.map((column) => (
               <th key={column.accessorkey}> {column.header} </th>
             ))}
