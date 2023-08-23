@@ -8,7 +8,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
 
-type User = { id: string; username: string };
+type User = { id: string; username: string; email: string };
 const usersAdapter = createEntityAdapter<User>({
   selectId: (user) => user.id,
   sortComparer: (a, b) => a.username.localeCompare(b.username),
@@ -17,6 +17,7 @@ const usersAdapter = createEntityAdapter<User>({
 interface UsersState {
   id: string;
   username: string;
+  email: string;
 }
 
 const usersSlice = createSlice({

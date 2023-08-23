@@ -24,6 +24,14 @@ const ClientsPage = () => {
     { accessorkey: "clerk", header: "Clerk" },
   ];
 
+  const onDelete = () => {
+    console.log("delete");
+  };
+
+  const onAdd = () => {
+    console.log("add");
+  };
+
   return (
     // <Table>
     //   <thead>
@@ -40,6 +48,8 @@ const ClientsPage = () => {
       columns={columns}
       RowTemplate={ClientRow}
       data={clients}
+      onDelete={onDelete}
+      onAdd={onAdd}
     ></PowerTable>
   );
 };
