@@ -4,6 +4,7 @@ import {
   createEntityAdapter,
   PayloadAction,
   EntityId,
+  current,
 } from "@reduxjs/toolkit";
 
 import { axiosInstance } from "../../api/api";
@@ -60,7 +61,12 @@ const clientsSlice = createSlice({
         // }
       )
       .addCase(deleteClient.fulfilled, clientsAdapter.removeOne)
-      .addCase(editClient.fulfilled, clientsAdapter.updateOne);
+      .addCase(editClient.fulfilled, (state, action) => {
+        console.log(current(state.entities));
+        clientsAdapter.updateOne(state, action.payload);
+        console.log(action.payload);
+        console.log(current(state.entities));
+      });
     //   .addCase(addClient.rejected, (state) => {
     //     state.status = "failed";
     //   });
