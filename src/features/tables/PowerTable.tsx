@@ -9,7 +9,9 @@ import {
   TextInput,
   UnstyledButton,
   createStyles,
+  Text,
   rem,
+  Divider,
 } from "@mantine/core";
 import { EntityId } from "@reduxjs/toolkit";
 import { useState } from "react";
@@ -28,6 +30,7 @@ interface Props {
   }[];
   RowTemplate: React.ComponentType<{ id: EntityId; children }>;
   data: EntityId[];
+  title: string;
   onDelete?: Function;
   onAdd?: Function;
   onOpen?: Function;
@@ -42,6 +45,7 @@ const PowerTable = ({
   columns,
   RowTemplate,
   data,
+  title,
   onDelete,
   onAdd,
   onOpen,
@@ -123,6 +127,9 @@ const PowerTable = ({
         direction="row"
         wrap="wrap"
       >
+        <Text fz={30} fw={700}>
+          {title}
+        </Text>
         {onDelete && (
           <ActionIcon
             variant="default"
@@ -148,7 +155,8 @@ const PowerTable = ({
           />
         )}
       </Flex>
-      <Table>
+      {/* <Divider my="sm" /> */}
+      <Table striped highlightOnHover withBorder withColumnBorders>
         <thead>
           <tr key="header">
             <th style={{ width: rem(40) }}>

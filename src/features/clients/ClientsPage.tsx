@@ -66,6 +66,7 @@ const ClientsPage = () => {
         columns={columns}
         RowTemplate={ClientRow}
         data={clients}
+        title="Clients"
         onDelete={onDelete}
         onAdd={() => {
           setClientEdited("");

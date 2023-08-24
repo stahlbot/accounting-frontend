@@ -21,6 +21,7 @@ export const UserPage = () => {
       columns={columns}
       RowTemplate={UserRow}
       data={users}
+      title="User"
       setSortBy={setSortBy}
       sortBy={sortBy}
     ></PowerTable>
