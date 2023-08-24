@@ -31,17 +31,21 @@ function App() {
   );
 
   useEffect(() => {
+    console.log("loginfromlocalstorage");
     dispatch(loginFromLocalStorage());
     // console.log(isAuthenticated)
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log("isAuthenticated");
+    setStorageChecked(true);
+  }, [dispatch, isAuthenticated]);
+
+  useEffect(() => {
     if (usersStatus === "idle") {
       dispatch(fetchUsers());
     }
-  });
-
-  useEffect(() => {
-    // console.log(isAuthenticated)
-    setStorageChecked(true);
-  }, [isAuthenticated]);
+  }, [dispatch, usersStatus]);
 
   return (
     storageChecked && (

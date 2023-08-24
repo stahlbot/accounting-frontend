@@ -8,6 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Modal } from "@mantine/core";
 import AddClientForm from "./AddClientForm";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../app/store";
 
 const ClientsPage = () => {
   // const rows =
@@ -17,9 +18,15 @@ const ClientsPage = () => {
   const navigate = useNavigate();
   const [clientEdited, setClientEdited] = useState<string>("");
 
+  const clientsStatus = useSelector<RootState, string>(
+    (state) => state.clients.status
+  );
+
   useEffect(() => {
-    dispatch(fetchClients());
-  });
+    if (clientsStatus === "idle") {
+      dispatch(fetchClients());
+    }
+  }, [dispatch, clientsStatus]);
 
   const columns = [
     { accessorkey: "clientName", header: "Name" },
