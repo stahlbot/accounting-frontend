@@ -33,7 +33,9 @@ const AddClientForm = ({ close, clientId }: Props) => {
     if (!clientId) {
       await dispatch(addClient({ name, number, clerk })).unwrap();
     } else {
-      await dispatch(editClient({ ...client, name, number, clerk })).unwrap();
+      await dispatch(
+        editClient({ id: clientId, changes: { name, number, clerk } })
+      ).unwrap();
     }
     // console.log(client);
     close();

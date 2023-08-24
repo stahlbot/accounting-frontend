@@ -5,6 +5,7 @@ import {
   PayloadAction,
   EntityId,
   current,
+  Update,
 } from "@reduxjs/toolkit";
 
 import { axiosInstance } from "../../api/api";
@@ -49,27 +50,12 @@ const clientsSlice = createSlice({
       //   .addCase(addClient.pending, (state) => {
       //     state.status = "loading";
       //   })
-      .addCase(
-        addClient.fulfilled,
-        clientsAdapter.addOne
-        // (state, action: PayloadAction<ClientState>) => {
-        //   const keyMap = action.payload.map(
-        //     ({ created_at: date, ...rest }) => ({ ...rest, createdAt: date })
-        //   );
-        //   state.status = "succeeded";
-        //   clientsAdapter.upsertMany(state, keyMap);
-        // }
-      )
+      .addCase(addClient.fulfilled, clientsAdapter.addOne)
       .addCase(deleteClient.fulfilled, clientsAdapter.removeOne)
       .addCase(editClient.fulfilled, (state, action) => {
-        console.log(current(state.entities));
         clientsAdapter.updateOne(state, action.payload);
-        console.log(action.payload);
-        console.log(current(state.entities));
+        // console.log(current(state.entities));
       });
-    //   .addCase(addClient.rejected, (state) => {
-    //     state.status = "failed";
-    //   });
   },
 });
 
@@ -80,20 +66,6 @@ export const {
   selectById: selectClientById,
   selectIds: selectClientIds,
 } = clientsAdapter.getSelectors((state: RootState) => state.clients);
-
-// interface ClientState {
-//   id: string;
-//   name: string;
-//   number: string;
-//   created_at: string;
-//   clerk: string;
-// }
-
-// interface ClientsState {
-//     id: string;
-//     username: string;
-
-//   }
 
 export const fetchClients = createAsyncThunk(
   "clients/fetchClients",
@@ -106,10 +78,6 @@ export const fetchClients = createAsyncThunk(
 export const addClient = createAsyncThunk(
   "clients/addClient",
   async (client: { name: string; number: string; clerk: string }) => {
-    // client = {
-    //   ...client,
-    //   // createdAt:
-    // };
     const response = await axiosInstance.post("/api/v1/clients/", client);
     return response.data;
   }
@@ -125,11 +93,11 @@ export const deleteClient = createAsyncThunk(
 
 export const editClient = createAsyncThunk(
   "clients/editClient",
-  async (client: Client) => {
+  async (client: Update<Client>) => {
     const response = await axiosInstance.patch(
       `/api/v1/clients/${client.id}/`,
-      client
+      client.changes
     );
-    return response.data;
+    return client;
   }
 );
