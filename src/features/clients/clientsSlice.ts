@@ -70,9 +70,21 @@ export const {
 } = clientsAdapter.getSelectors((state: RootState) => state.clients);
 
 export const selectClientIdsSortedBy = createSelector(
-  [selectAllClients, (state, sortBy) => sortBy],
-  (clients, sortBy) => {
-    const clientsSorted = clients.sort((a, b) =>
+  [
+    selectAllClients,
+    (state, props) => props.sortBy,
+    (state, props) => props.search,
+  ],
+  (clients, sortBy, search) => {
+    const filteredClients = clients.filter((client) =>
+      Object.values(client).some((value) =>
+        (typeof value === "number"
+          ? String(value)
+          : value.toLowerCase()
+        ).includes(search.toLowerCase())
+      )
+    );
+    const clientsSorted = filteredClients.sort((a, b) =>
       sortStringsAndNumbers(a, b, sortBy)
     );
     return clientsSorted.map((c) => c.id);

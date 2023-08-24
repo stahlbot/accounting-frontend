@@ -6,6 +6,7 @@ import {
   Flex,
   Group,
   Table,
+  TextInput,
   UnstyledButton,
   createStyles,
   rem,
@@ -33,6 +34,8 @@ interface Props {
   onEdit?: Function;
   setSortBy?: Function;
   sortBy?: string;
+  search?: string;
+  setSearch?: Function;
 }
 
 const PowerTable = ({
@@ -45,9 +48,12 @@ const PowerTable = ({
   onEdit,
   setSortBy,
   sortBy,
+  search,
+  setSearch,
 }: Props) => {
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [selection, setSelection] = useState<EntityId[]>([]);
+
   const toggleRow = (id: EntityId) =>
     setSelection((current) =>
       current.includes(id)
@@ -66,6 +72,12 @@ const PowerTable = ({
     setReverseSortDirection(reversed);
     setSortBy!(field);
     // setSortedData(sortData(data, { sortBy: field, reversed, search }));
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
+    setSearch!(value);
+    // setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
   const rows = (reverseSortDirection ? [...data].reverse() : data).map((id) => (
@@ -125,6 +137,15 @@ const PowerTable = ({
           <ActionIcon variant="default" size={"md"} onClick={() => onAdd()}>
             <Plus />
           </ActionIcon>
+        )}
+        {setSearch && (
+          <TextInput
+            placeholder="Search by any field"
+            // mb="md"
+            icon={<IconSearch size="0.9rem" stroke={1.5} />}
+            value={search}
+            onChange={handleSearchChange}
+          />
         )}
       </Flex>
       <Table>

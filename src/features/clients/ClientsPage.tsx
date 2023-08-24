@@ -20,11 +20,12 @@ const ClientsPage = () => {
   const navigate = useNavigate();
 
   const [sortBy, setSortBy] = useState<string>("name");
+  const [search, setSearch] = useState("");
   const [opened, { open, close }] = useDisclosure(false);
   const [clientEdited, setClientEdited] = useState<string>("");
 
   const clients = useSelector((state) =>
-    selectClientIdsSortedBy(state, sortBy)
+    selectClientIdsSortedBy(state, { sortBy, search })
   );
   const clientsStatus = useSelector<RootState, string>(
     (state) => state.clients.status
@@ -74,6 +75,8 @@ const ClientsPage = () => {
         onEdit={onEdit}
         setSortBy={setSortBy}
         sortBy={sortBy}
+        search={search}
+        setSearch={setSearch}
       ></PowerTable>
     </>
   );
