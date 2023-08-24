@@ -12,22 +12,30 @@ interface Props {
 
 const AddClientForm = ({ close, clientId }: Props) => {
   const dispatch = useAppDispatch();
-  let form;
-  let client;
-  if (!clientId) {
-    form = useForm({
-      initialValues: {
-        name: "",
-        number: "",
-        clerk: "",
-      },
-    });
-  } else {
-    client = useAppSelector((state) => selectClientById(state, clientId));
-    form = useForm({
-      initialValues: { ...client },
-    });
-  }
+  // let form;
+  // let client;
+  const client = useAppSelector((state) => selectClientById(state, clientId!));
+
+  // if (!clientId) {
+  const form = useForm({
+    initialValues: {
+      name: "",
+      number: "",
+      clerk: "",
+      ...client,
+    },
+    validate: {
+      name: (value) =>
+        value.length < 2 ? "Name must have at least 2 letters" : null,
+      number: (value) =>
+        /^\d{5}$/.test(value) ? null : "Number must contain exactly 5 digits",
+    },
+  });
+  // } else {
+  //   form = useForm({
+  //     initialValues: { ...client },
+  //   });
+  // }
 
   const submit = form.onSubmit(async ({ name, number, clerk }) => {
     if (!clientId) {
