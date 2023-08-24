@@ -16,16 +16,16 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../../app/store";
 
 const ClientsPage = () => {
-  // const rows =
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [sortBy, setSortBy] = useState<string>("name");
+  const [opened, { open, close }] = useDisclosure(false);
+  const [clientEdited, setClientEdited] = useState<string>("");
+
   const clients = useSelector((state) =>
     selectClientIdsSortedBy(state, sortBy)
   );
-  const [opened, { open, close }] = useDisclosure(false);
-  const navigate = useNavigate();
-  const [clientEdited, setClientEdited] = useState<string>("");
-
   const clientsStatus = useSelector<RootState, string>(
     (state) => state.clients.status
   );
@@ -55,10 +55,6 @@ const ClientsPage = () => {
     setClientEdited(id);
     open();
   };
-
-  //   useEffect(() => {
-  //     if (!opened) setClientEdited("");
-  //   }, [opened]);
 
   return (
     <>

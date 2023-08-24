@@ -1,10 +1,15 @@
 import { useSelector } from "react-redux";
-import { selectUserIds } from "./userSlice";
+import { selectUserIds, selectUserIdsSortedBy } from "./userSlice";
 import PowerTable from "../tables/PowerTable";
 import UserRow from "./UserRow";
+import { useState } from "react";
 
 export const UserPage = () => {
-  const users = useSelector(selectUserIds);
+  // const users = useSelector(selectUserIds);
+
+  const [sortBy, setSortBy] = useState<string>("name");
+
+  const users = useSelector((state) => selectUserIdsSortedBy(state, sortBy));
 
   const columns = [
     { accessorkey: "userName", header: "Name" },
@@ -16,6 +21,8 @@ export const UserPage = () => {
       columns={columns}
       RowTemplate={UserRow}
       data={users}
+      setSortBy={setSortBy}
+      sortBy={sortBy}
     ></PowerTable>
   );
 };

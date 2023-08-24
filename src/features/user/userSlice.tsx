@@ -2,11 +2,13 @@ import {
   createSlice,
   createAsyncThunk,
   createEntityAdapter,
+  createSelector,
 } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 // import type { RootState } from '../../app/store'
 import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
+import { sortStringsAndNumbers } from "../../app/sort";
 
 type User = { id: string; username: string; email: string };
 const usersAdapter = createEntityAdapter<User>({
@@ -52,6 +54,16 @@ export const {
   selectById: selectUserById,
   selectIds: selectUserIds,
 } = usersAdapter.getSelectors((state: RootState) => state.users);
+
+export const selectUserIdsSortedBy = createSelector(
+  [selectAllUsers, (state, sortBy) => sortBy],
+  (clients, sortBy) => {
+    const clientsSorted = clients.sort((a, b) =>
+      sortStringsAndNumbers(a, b, sortBy)
+    );
+    return clientsSorted.map((c) => c.id);
+  }
+);
 
 export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
   const response = await axiosInstance.get("/api/v1/users/");
