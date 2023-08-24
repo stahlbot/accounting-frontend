@@ -46,6 +46,7 @@ const PowerTable = ({
   setSortBy,
   sortBy,
 }: Props) => {
+  const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [selection, setSelection] = useState<EntityId[]>([]);
   const toggleRow = (id: EntityId) =>
     setSelection((current) =>
@@ -60,7 +61,14 @@ const PowerTable = ({
     selection.forEach((id) => onDelete!(id));
   };
 
-  const rows = data.map((id) => (
+  const setSorting = (field) => {
+    const reversed = field === sortBy ? !reverseSortDirection : false;
+    setReverseSortDirection(reversed);
+    setSortBy!(field);
+    // setSortedData(sortData(data, { sortBy: field, reversed, search }));
+  };
+
+  const rows = (reverseSortDirection ? [...data].reverse() : data).map((id) => (
     <RowTemplate key={id} id={id}>
       <td>
         <Flex gap={"sm"} justify="center" align={"center"}>
@@ -135,7 +143,8 @@ const PowerTable = ({
             {columns.map((column) => (
               <Th
                 sorted={sortBy === column.accessorkey}
-                onSort={() => setSortBy!(column.accessorkey)}
+                onSort={() => setSorting(column.accessorkey)}
+                reversed={reverseSortDirection}
                 key={column.accessorkey}
                 sortBy={sortBy} // if sortBy is not set, then sortbuttons not rendered
               >
