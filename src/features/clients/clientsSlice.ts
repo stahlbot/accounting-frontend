@@ -6,10 +6,12 @@ import {
   EntityId,
   current,
   Update,
+  createSelector,
 } from "@reduxjs/toolkit";
 
 import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
+import { sortStringsAndNumbers } from "../../app/sort";
 
 type Client = {
   id: string;
@@ -66,6 +68,16 @@ export const {
   selectById: selectClientById,
   selectIds: selectClientIds,
 } = clientsAdapter.getSelectors((state: RootState) => state.clients);
+
+export const selectClientIdsSortedBy = createSelector(
+  [selectAllClients, (state, sortBy) => sortBy],
+  (clients, sortBy) => {
+    const clientsSorted = clients.sort((a, b) =>
+      sortStringsAndNumbers(a, b, sortBy)
+    );
+    return clientsSorted.map((c) => c.id);
+  }
+);
 
 export const fetchClients = createAsyncThunk(
   "clients/fetchClients",

@@ -1,7 +1,24 @@
-import { ActionIcon, Button, Checkbox, Flex, Table, rem } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Center,
+  Checkbox,
+  Flex,
+  Group,
+  Table,
+  UnstyledButton,
+  createStyles,
+  rem,
+} from "@mantine/core";
 import { EntityId } from "@reduxjs/toolkit";
 import { useState } from "react";
 import { Link, Edit, Plus, Trash } from "tabler-icons-react";
+import {
+  IconSelector,
+  IconChevronDown,
+  IconChevronUp,
+  IconSearch,
+} from "@tabler/icons-react";
 
 interface Props {
   columns: {
@@ -14,6 +31,8 @@ interface Props {
   onAdd?: Function;
   onOpen?: Function;
   onEdit?: Function;
+  setSortBy?: Function;
+  sortBy?: string;
 }
 
 const PowerTable = ({
@@ -24,6 +43,8 @@ const PowerTable = ({
   onAdd,
   onOpen,
   onEdit,
+  setSortBy,
+  sortBy,
 }: Props) => {
   const [selection, setSelection] = useState<EntityId[]>([]);
   const toggleRow = (id: EntityId) =>
@@ -112,7 +133,15 @@ const PowerTable = ({
               />
             </th>
             {columns.map((column) => (
-              <th key={column.accessorkey}> {column.header} </th>
+              <Th
+                sorted={sortBy === column.accessorkey}
+                onSort={() => setSortBy!(column.accessorkey)}
+                key={column.accessorkey}
+                sortBy={sortBy} // if sortBy is not set, then sortbuttons not rendered
+              >
+                {" "}
+                {column.header}{" "}
+              </Th>
             ))}
           </tr>
         </thead>
@@ -121,5 +150,68 @@ const PowerTable = ({
     </>
   );
 };
+
+interface ThProps {
+  children: React.ReactNode;
+  reversed?: boolean;
+  sorted: boolean;
+  onSort(): void;
+  sortBy?: string;
+}
+
+function Th({ children, reversed, sorted, onSort, sortBy }: ThProps) {
+  const { classes } = useStyles();
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
+  return (
+    <th className={classes.th}>
+      {sortBy && (
+        <UnstyledButton onClick={onSort} className={classes.control}>
+          <Group position="apart">
+            {/* <Text  */}
+            {/* // fw={500} fz="sm" */}
+            {/* > */}
+            {children}
+            {/* </Text> */}
+            <Center className={classes.icon}>
+              <Icon
+                // size="sm"
+                stroke={1.5}
+              />
+            </Center>
+          </Group>
+        </UnstyledButton>
+      )}
+      {!sortBy && children}
+    </th>
+  );
+}
+
+const useStyles = createStyles((theme) => ({
+  th: {
+    padding: "0 !important",
+  },
+
+  control: {
+    width: "100%",
+    padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
+    },
+  },
+
+  icon: {
+    width: rem(21),
+    height: rem(21),
+    borderRadius: rem(21),
+  },
+}));
 
 export default PowerTable;
