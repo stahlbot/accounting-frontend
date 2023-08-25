@@ -33,13 +33,12 @@ export const AccountForm = ({ close, accountId, accountChart }: Props) => {
   const submit = form.onSubmit(
     async ({ name, number, nonDeductibleTax, accountChart }) => {
       if (!accountId) {
-        const acid = Number(accountChart);
         await dispatch(
           addAccountTemplate({
             name,
             number,
             nonDeductibleTax,
-            accountChart: acid,
+            accountChart,
           })
         ).unwrap();
       }

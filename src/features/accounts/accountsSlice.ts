@@ -104,7 +104,7 @@ export const addAccountTemplate = createAsyncThunk(
     name: string;
     number: string;
     nonDeductibleTax: boolean;
-    accountChart: number;
+    accountChart: string;
   }) => {
     const response = await axiosInstance.post(
       `/api/v1/account-charts/${account.accountChart}/accounts/`,
