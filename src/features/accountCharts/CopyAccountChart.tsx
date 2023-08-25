@@ -9,6 +9,11 @@ import { RootState } from "../../app/store";
 import { useEffect } from "react";
 import { useForm } from "@mantine/form";
 import { Button, Select, Text } from "@mantine/core";
+import {
+  clearAccountsState,
+  fetchAccountsTemplate,
+  selectAllAccounts,
+} from "../accounts/accountsSlice";
 
 export default function CopyAccountChart() {
   const params = useParams();
@@ -19,11 +24,10 @@ export default function CopyAccountChart() {
     (state) => state.accountCharts.status
   );
 
-  useEffect(() => {
-    if (accountChartsStatus === "idle") {
-      dispatch(fetchAccountChartTemplates());
-    }
-  }, [dispatch, accountChartsStatus]);
+  const accounts = useSelector(selectAllAccounts);
+  //   const accountsStatus = useSelector<RootState, string>(
+  //     (state) => state.accounts.status
+  //   );
 
   const form = useForm({
     initialValues: {
@@ -31,7 +35,19 @@ export default function CopyAccountChart() {
     },
   });
 
-  console.log(accountCharts);
+  useEffect(() => {
+    if (accountChartsStatus === "idle") {
+      dispatch(fetchAccountChartTemplates());
+    }
+  }, [dispatch, accountChartsStatus]);
+
+  useEffect(() => {
+    if (form.values.accountChartId) {
+      console.log("fetching accounts for this chart");
+      dispatch(clearAccountsState());
+      dispatch(fetchAccountsTemplate(form.values.accountChartId));
+    }
+  }, [form.values.accountChartId]);
 
   const submit = form.onSubmit(async ({ accountChartId }) => {});
 
@@ -47,6 +63,7 @@ export default function CopyAccountChart() {
             label: accountChart.name,
           };
         })}
+        {...form.getInputProps("accountChartId")}
       />
       <Button type="submit" mt={"md"} fullWidth>
         Copy
