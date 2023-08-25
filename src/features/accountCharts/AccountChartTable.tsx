@@ -1,9 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import PowerTable from "../tables/PowerTable";
 import AccountChartRow from "./AccountChartRow";
+import { Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { AccountChartForm } from "./AccountChartForm";
 
 export const AccountChartTable = ({ accountCharts, sortBy, setSortBy }) => {
   const navigate = useNavigate();
+
+  const [opened, { open, close }] = useDisclosure(false);
+
   const columns = [
     { accessorkey: "name", header: "Name" },
     { accessorkey: "isTemplate", header: "Is a Template" },
@@ -14,14 +20,22 @@ export const AccountChartTable = ({ accountCharts, sortBy, setSortBy }) => {
   };
 
   return (
-    <PowerTable
-      columns={columns}
-      RowTemplate={AccountChartRow}
-      data={accountCharts}
-      title="Account Charts"
-      setSortBy={setSortBy}
-      sortBy={sortBy}
-      onOpen={onOpen}
-    ></PowerTable>
+    <>
+      <Modal opened={opened} onClose={close} title="Add Account Chart Template">
+        <AccountChartForm close={close} />
+      </Modal>
+      <PowerTable
+        columns={columns}
+        RowTemplate={AccountChartRow}
+        data={accountCharts}
+        title="Account Charts"
+        setSortBy={setSortBy}
+        sortBy={sortBy}
+        onOpen={onOpen}
+        onAdd={() => {
+          open();
+        }}
+      ></PowerTable>
+    </>
   );
 };

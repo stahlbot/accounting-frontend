@@ -42,7 +42,8 @@ const accountChartsSlice = createSlice({
       )
       .addCase(fetchAccountChartTemplates.rejected, (state) => {
         state.status = "failed";
-      });
+      })
+      .addCase(addAccountChart.fulfilled, accountChartsAdapter.addOne);
   },
 });
 
@@ -73,6 +74,21 @@ export const fetchAccountChartTemplates = createAsyncThunk(
       "/api/v1/account-charts/templates"
     );
     // const response = await axios.get("/api/v1/users", {headers: {Authorization: `Bearer ${token}`}})
+    return response.data;
+  }
+);
+
+export const addAccountChart = createAsyncThunk(
+  "accountChart/addAccountChart",
+  async (accountChart: {
+    name: string;
+    isTemplate: boolean | string;
+    client: string;
+  }) => {
+    const response = await axiosInstance.post(
+      "/api/v1/account-charts/",
+      accountChart
+    );
     return response.data;
   }
 );

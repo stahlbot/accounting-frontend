@@ -28,10 +28,6 @@ function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false)
   // const authenticationPath = 'login'
 
-  const usersStatus = useSelector<RootState, string>(
-    (state) => state.users.status
-  );
-
   useEffect(() => {
     dispatch(loginFromLocalStorage());
     // console.log(isAuthenticated)
@@ -40,12 +36,6 @@ function App() {
   useEffect(() => {
     setStorageChecked(true);
   }, [dispatch, isAuthenticated]);
-
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, usersStatus]);
 
   return (
     storageChecked && (

@@ -1,11 +1,24 @@
 import { useSelector } from "react-redux";
-import { selectUserIds, selectUserIdsSortedBy } from "./userSlice";
+import { fetchUsers, selectUserIds, selectUserIdsSortedBy } from "./userSlice";
 import PowerTable from "../tables/PowerTable";
 import UserRow from "./UserRow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { RootState } from "../../app/store";
+import { useAppDispatch } from "../../app/hooks";
 
 export const UserPage = () => {
   // const users = useSelector(selectUserIds);
+  const dispatch = useAppDispatch();
+
+  const usersStatus = useSelector<RootState, string>(
+    (state) => state.users.status
+  );
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, usersStatus]);
 
   const [sortBy, setSortBy] = useState<string>("name");
 
