@@ -12,6 +12,7 @@ import {
   Text,
   rem,
   Divider,
+  Tooltip,
 } from "@mantine/core";
 import { EntityId } from "@reduxjs/toolkit";
 import { useState } from "react";
@@ -95,23 +96,37 @@ const PowerTable = ({
             size="sm"
           />
           {onOpen && (
-            <ActionIcon variant="default" size="sm" onClick={() => onOpen(id)}>
-              <Link />
-            </ActionIcon>
+            <Tooltip label="Open">
+              <ActionIcon
+                variant="default"
+                size="sm"
+                onClick={() => onOpen(id)}
+              >
+                <Link />
+              </ActionIcon>
+            </Tooltip>
           )}
           {onEdit && (
-            <ActionIcon variant="default" size="sm" onClick={() => onEdit(id)}>
-              <Edit />
-            </ActionIcon>
+            <Tooltip label="Edit">
+              <ActionIcon
+                variant="default"
+                size="sm"
+                onClick={() => onEdit(id)}
+              >
+                <Edit />
+              </ActionIcon>
+            </Tooltip>
           )}
           {onDelete && (
-            <ActionIcon
-              variant="default"
-              size="sm"
-              onClick={() => onDelete(id)}
-            >
-              <Trash />
-            </ActionIcon>
+            <Tooltip label="Delete">
+              <ActionIcon
+                variant="default"
+                size="sm"
+                onClick={() => onDelete(id)}
+              >
+                <Trash />
+              </ActionIcon>
+            </Tooltip>
           )}
         </Flex>
       </td>
@@ -131,19 +146,23 @@ const PowerTable = ({
           {title}
         </Text>
         {onDelete && (
-          <ActionIcon
-            variant="default"
-            size={"md"}
-            color="red"
-            onClick={() => deleteSelected()}
-          >
-            <Trash />
-          </ActionIcon>
+          <Tooltip label="Delete Selected">
+            <ActionIcon
+              variant="default"
+              size={"md"}
+              color="red"
+              onClick={() => deleteSelected()}
+            >
+              <Trash />
+            </ActionIcon>
+          </Tooltip>
         )}
         {onAdd && (
-          <ActionIcon variant="default" size={"md"} onClick={() => onAdd()}>
-            <Plus />
-          </ActionIcon>
+          <Tooltip label="Add New">
+            <ActionIcon variant="default" size={"md"} onClick={() => onAdd()}>
+              <Plus />
+            </ActionIcon>
+          </Tooltip>
         )}
         {setSearch && (
           <TextInput
