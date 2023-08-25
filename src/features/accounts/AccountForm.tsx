@@ -1,7 +1,11 @@
 import { useForm } from "@mantine/form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Button, TextInput, Checkbox } from "@mantine/core";
-import { addAccountTemplate, selectAccountById } from "./accountsSlice";
+import {
+  addAccountTemplate,
+  editAccountTemplate,
+  selectAccountById,
+} from "./accountsSlice";
 
 interface Props {
   close: Function;
@@ -41,12 +45,14 @@ export const AccountForm = ({ close, accountId, accountChart }: Props) => {
             accountChart,
           })
         ).unwrap();
+      } else {
+        await dispatch(
+          editAccountTemplate({
+            id: accountId,
+            changes: { name, number, nonDeductibleTax, accountChart },
+          })
+        ).unwrap();
       }
-      // else {
-      //   await dispatch(
-      //     editAccountChart({ id: accountChartId, changes: { name, isTemplate } })
-      //   ).unwrap();
-      // }
       close();
     }
   );

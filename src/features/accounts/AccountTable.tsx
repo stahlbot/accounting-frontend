@@ -3,24 +3,34 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import AccountRow from "./AccountRow";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectAccountChartById } from "../accountCharts/accountChartsSlice";
-import { useEffect } from "react";
-import { clearAccountsState } from "./accountsSlice";
+import {
+  deleteAccountChart,
+  selectAccountChartById,
+} from "../accountCharts/accountChartsSlice";
+import { useEffect, useState } from "react";
+import { clearAccountsState, deleteAccount } from "./accountsSlice";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal } from "@mantine/core";
 import { AccountForm } from "./AccountForm";
+
+interface Props {
+  accounts: string[];
+  sortBy: string;
+  setSortBy: Function;
+  accountChartId: string;
+}
 
 export const AccountTable = ({
   accounts,
   sortBy,
   setSortBy,
   accountChartId,
-}) => {
+}: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [opened, { open, close }] = useDisclosure(false);
-  //   const [accountChartEdited, setAccountChartEdited] = useState<string>("");
+  const [accountEdited, setAccountEdited] = useState<string>("");
 
   const accountChart = useAppSelector((state) =>
     selectAccountChartById(state, accountChartId)
@@ -36,19 +46,25 @@ export const AccountTable = ({
     navigate(`/settings/account-charts/${accountChart!.id}/account/${id}`);
   };
 
-  //   const onEdit = (id) => {
-  //     setAccountChartEdited(id);
-  //     open();
-  //   };
+  const onEdit = (id) => {
+    setAccountEdited(id);
+    open();
+  };
 
-  //   const onDelete = async (id) => {
-  //     await dispatch(deleteAccountChart(id)).unwrap();
-  //   };
+  const onDelete = async (id: string) => {
+    await dispatch(
+      deleteAccount({ accountId: id, accountChartId: accountChartId })
+    ).unwrap();
+  };
 
   return (
     <>
       <Modal opened={opened} onClose={close} title="Add Account Template">
-        <AccountForm close={close} accountChart={accountChart!.id} />
+        <AccountForm
+          close={close}
+          accountChart={accountChart!.id}
+          accountId={accountEdited}
+        />
       </Modal>
       <PowerTable
         columns={columns}
@@ -60,10 +76,10 @@ export const AccountTable = ({
         onOpen={onOpen}
         onAdd={() => {
           open();
-          //   setAccountChartEdited("");
+          setAccountEdited("");
         }}
-        // onEdit={onEdit}
-        // onDelete={onDelete}
+        onEdit={onEdit}
+        onDelete={onDelete}
       ></PowerTable>
     </>
   );

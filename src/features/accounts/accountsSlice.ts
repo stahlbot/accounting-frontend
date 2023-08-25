@@ -52,12 +52,9 @@ const accountsSlice = createSlice({
       .addCase(fetchAccountsTemplate.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(addAccountTemplate.fulfilled, accountsAdapter.addOne);
-    // .addCase(deleteAccount.fulfilled, accountsAdapter.removeOne)
-    // .addCase(editAccount.fulfilled, (state, action) => {
-    //   accountsAdapter.updateOne(state, action.payload);
-    //   // console.log(current(state.entities));
-    // })
+      .addCase(addAccountTemplate.fulfilled, accountsAdapter.addOne)
+      .addCase(editAccountTemplate.fulfilled, accountsAdapter.updateOne)
+      .addCase(deleteAccount.fulfilled, accountsAdapter.removeOne);
   },
 });
 
@@ -114,23 +111,28 @@ export const addAccountTemplate = createAsyncThunk(
   }
 );
 
-//   export const editAccountChart = createAsyncThunk(
-//     "accountCharts/editAccountChart",
-//     async (accountChart: Update<Account>) => {
-//       const response = await axiosInstance.patch(
-//         `/api/v1/account-charts/${accountChart.id}/`,
-//         accountChart.changes
-//       );
-//       return accountChart;
-//     }
-//   );
+export const editAccountTemplate = createAsyncThunk(
+  "accounts/editAccount",
+  async (account: Update<Account>) => {
+    const response = await axiosInstance.patch(
+      `/api/v1/account-charts/${account.changes.accountChart}/accounts/${account.id}/`,
+      account.changes
+    );
+    return account;
+  }
+);
 
-//   export const deleteAccountChart = createAsyncThunk(
-//     "accountChart/deleteAccountChart",
-//     async (accountChartId: string) => {
-//       const response = await axiosInstance.delete(
-//         `/api/v1/account-charts/${accountChartId}`
-//       );
-//       return accountChartId;
-//     }
-//   );
+interface DeleteProps {
+  accountId: string;
+  accountChartId: string;
+}
+
+export const deleteAccount = createAsyncThunk(
+  "accounts/deleteAccount",
+  async ({ accountId, accountChartId }: DeleteProps) => {
+    const response = await axiosInstance.delete(
+      `/api/v1/account-charts/${accountChartId}/accounts/${accountId}/`
+    );
+    return accountId;
+  }
+);
