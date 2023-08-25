@@ -1,11 +1,20 @@
 import { Tabs, Text } from "@mantine/core";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectClientById } from "./clientsSlice";
 import { useParams } from "react-router-dom";
 import ClientAccountsPage from "./ClientAccountsPage";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  clearAccountsState,
+  fetchAccountsTemplate,
+  selectAccountIdsSortedBy,
+} from "../accounts/accountsSlice";
+import { RootState } from "../../app/store";
 
 export const ClientPage = () => {
   const params = useParams();
+  const dispatch = useAppDispatch();
   // const id = params.clientId as EntityId | undefined;
   // console.log(id);
 
@@ -19,6 +28,31 @@ export const ClientPage = () => {
   const client = useAppSelector((state) =>
     selectClientById(state, params.clientId!)
   );
+
+  const [sortBy, setSortBy] = useState<string>("name");
+  const accounts = useSelector((state) =>
+    selectAccountIdsSortedBy(state, {
+      sortBy: sortBy,
+      accountChartId: client!.accountChart,
+    })
+  );
+
+  const accountsStatus = useSelector<RootState, string>(
+    (state) => state.accounts.status
+  );
+
+  useEffect(() => {
+    if (accountsStatus === "idle" && client?.accountChart) {
+      dispatch(fetchAccountsTemplate(client.accountChart));
+    }
+  }, [dispatch, accountsStatus, client]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearAccountsState());
+    };
+  }, [dispatch]);
+
   if (client) {
     return (
       <Tabs defaultValue="accountlist">

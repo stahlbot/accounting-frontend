@@ -22,6 +22,7 @@ const AddClientForm = ({ close, clientId }: Props) => {
       name: "",
       number: "",
       clerk: "",
+      accountChart: "",
       ...client,
     },
     validate: {
@@ -37,17 +38,24 @@ const AddClientForm = ({ close, clientId }: Props) => {
   //   });
   // }
 
-  const submit = form.onSubmit(async ({ name, number, clerk }) => {
-    if (!clientId) {
-      await dispatch(addClient({ name, number, clerk })).unwrap();
-    } else {
-      await dispatch(
-        editClient({ id: clientId, changes: { name, number, clerk } })
-      ).unwrap();
+  const submit = form.onSubmit(
+    async ({ name, number, clerk, accountChart }) => {
+      if (!clientId) {
+        await dispatch(
+          addClient({ name, number, clerk, accountChart })
+        ).unwrap();
+      } else {
+        await dispatch(
+          editClient({
+            id: clientId,
+            changes: { name, number, clerk, accountChart },
+          })
+        ).unwrap();
+      }
+      // console.log(client);
+      close();
     }
-    // console.log(client);
-    close();
-  });
+  );
 
   const users = useSelector(selectAllUsers).map((user) => ({
     value: user.id,

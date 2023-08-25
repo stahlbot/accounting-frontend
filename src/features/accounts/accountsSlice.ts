@@ -32,7 +32,6 @@ const accountsSlice = createSlice({
   }),
   reducers: {
     clearAccountsState(state) {
-      console.log("action dispatched");
       state.status = "idle";
       state.ids = [];
       state.entities = {};
@@ -55,7 +54,8 @@ const accountsSlice = createSlice({
       })
       .addCase(addAccountTemplate.fulfilled, accountsAdapter.addOne)
       .addCase(editAccountTemplate.fulfilled, accountsAdapter.updateOne)
-      .addCase(deleteAccount.fulfilled, accountsAdapter.removeOne);
+      .addCase(deleteAccount.fulfilled, accountsAdapter.removeOne)
+      .addCase(addManyAccounts.fulfilled, accountsAdapter.addMany);
   },
 });
 
@@ -96,18 +96,32 @@ export const fetchAccountsTemplate = createAsyncThunk(
   }
 );
 
+interface AddAccount {
+  name: string;
+  number: string;
+  category: string;
+  nonDeductibleTax: boolean;
+  accountChart: string;
+}
+
 export const addAccountTemplate = createAsyncThunk(
   "accounts/addAccountTemplate",
-  async (account: {
-    name: string;
-    number: string;
-    category: string;
-    nonDeductibleTax: boolean;
-    accountChart: string;
-  }) => {
+  async (account: AddAccount) => {
     const response = await axiosInstance.post(
       `/api/v1/account-charts/${account.accountChart}/accounts/`,
       account
+    );
+    return response.data;
+  }
+);
+
+export const addManyAccounts = createAsyncThunk(
+  "accounts/addManyAccounts",
+  async (payload: { accounts: AddAccount[]; accountChartId: string }) => {
+    const { accounts, accountChartId } = payload;
+    const response = await axiosInstance.post(
+      `/api/v1/account-charts/${accountChartId}/accounts/`,
+      accounts
     );
     return response.data;
   }

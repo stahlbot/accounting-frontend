@@ -34,7 +34,25 @@ const clientsSlice = createSlice({
     status: "idle",
     error: null,
   }),
-  reducers: {},
+  reducers: {
+    updateAccountChart(
+      state,
+      action: PayloadAction<{ clientId: string; accountChartId: string }>
+    ) {
+      const { clientId, accountChartId } = action.payload;
+      // Find the client by ID
+      const clientToUpdate = state.entities[clientId];
+      if (clientToUpdate) {
+        // Update the accountChart property
+        clientToUpdate.accountChart = accountChartId;
+        // Update the client using the adapter
+        clientsAdapter.updateOne(state, {
+          id: clientId,
+          changes: clientToUpdate,
+        });
+      }
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchClients.pending, (state) => {
@@ -61,6 +79,8 @@ const clientsSlice = createSlice({
       });
   },
 });
+
+export const { updateAccountChart } = clientsSlice.actions;
 
 export default clientsSlice.reducer;
 
@@ -102,7 +122,12 @@ export const fetchClients = createAsyncThunk(
 
 export const addClient = createAsyncThunk(
   "clients/addClient",
-  async (client: { name: string; number: string; clerk: string }) => {
+  async (client: {
+    name: string;
+    number: string;
+    clerk: string;
+    accountChart: string;
+  }) => {
     const response = await axiosInstance.post("/api/v1/clients/", client);
     return response.data;
   }
