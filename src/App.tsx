@@ -15,6 +15,7 @@ import { fetchUsers } from "./features/user/userSlice";
 import { RootState } from "./app/store";
 import { ClientPage } from "./features/clients/ClientPage";
 import { SettingsPage } from "./features/settings/Settings";
+import { AccountChartPage } from "./features/accountCharts/AccountChartPage";
 
 // import './App.css'
 
@@ -99,6 +100,16 @@ function App() {
                   isAuthenticated={isAuthenticated}
                   authenticationPath="/login"
                   outlet={<SettingsPage />}
+                />
+              }
+            />
+            <Route
+              path="/settings/account-charts/:accountChartId"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  authenticationPath="/login"
+                  outlet={<AccountChartPage />}
                 />
               }
             />

@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 
 export const ClientPage = () => {
   const params = useParams();
-  console.log(params);
   // const id = params.clientId as EntityId | undefined;
   // console.log(id);
 
