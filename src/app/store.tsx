@@ -4,6 +4,7 @@ import usersReducer from "../features/user/userSlice";
 import clientsReducer from "../features/clients/clientsSlice";
 import accountChartsSliceReducer from "../features/accountCharts/accountChartsSlice";
 import accountsSliceReducer from "../features/accounts/accountsSlice";
+import categoriesSliceReducer from "../features/categories/categoriesSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     clients: clientsReducer,
     accountCharts: accountChartsSliceReducer,
     accounts: accountsSliceReducer,
+    categories: categoriesSliceReducer,
   },
 });
 
