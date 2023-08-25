@@ -39,6 +39,7 @@ export const AccountTable = ({
   const columns = [
     { accessorkey: "name", header: "Name" },
     { accessorkey: "number", header: "Number" },
+    { accessorkey: "category", header: "Category" },
     { accessorkey: "nonDeductibleTax", header: "Non deductible Tax" },
   ];
 

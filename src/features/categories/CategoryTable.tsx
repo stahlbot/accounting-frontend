@@ -42,7 +42,7 @@ export const CategoryTable = ({ categories, sortBy, setSortBy }) => {
         columns={columns}
         RowTemplate={CategoryRow}
         data={categories}
-        title="Account Charts"
+        title="Account Categories"
         setSortBy={setSortBy}
         sortBy={sortBy}
         // onOpen={onOpen}

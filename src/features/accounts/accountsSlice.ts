@@ -14,6 +14,7 @@ interface Account {
   id: string;
   name: string;
   number: string;
+  category: string;
   nonDeductibleTax: boolean;
   accountChart: string;
 }
@@ -100,6 +101,7 @@ export const addAccountTemplate = createAsyncThunk(
   async (account: {
     name: string;
     number: string;
+    category: string;
     nonDeductibleTax: boolean;
     accountChart: string;
   }) => {

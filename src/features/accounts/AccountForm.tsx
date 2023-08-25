@@ -1,11 +1,12 @@
 import { useForm } from "@mantine/form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Button, TextInput, Checkbox } from "@mantine/core";
+import { Button, TextInput, Checkbox, Select } from "@mantine/core";
 import {
   addAccountTemplate,
   editAccountTemplate,
   selectAccountById,
 } from "./accountsSlice";
+import { selectAllCategories } from "../categories/categoriesSlice";
 
 interface Props {
   close: Function;
@@ -20,10 +21,20 @@ export const AccountForm = ({ close, accountId, accountChart }: Props) => {
     selectAccountById(state, accountId!)
   );
 
+  const categories = useAppSelector(selectAllCategories);
+
+  const dataSelect = categories.map((category) => {
+    return {
+      value: category.id,
+      label: `${category?.document}: ${category?.name}`,
+    };
+  });
+
   const form = useForm({
     initialValues: {
       name: "",
       number: "",
+      category: "",
       nonDeductibleTax: false,
       accountChart,
       ...account,
@@ -35,12 +46,13 @@ export const AccountForm = ({ close, accountId, accountChart }: Props) => {
   });
 
   const submit = form.onSubmit(
-    async ({ name, number, nonDeductibleTax, accountChart }) => {
+    async ({ name, number, category, nonDeductibleTax, accountChart }) => {
       if (!accountId) {
         await dispatch(
           addAccountTemplate({
             name,
             number,
+            category,
             nonDeductibleTax,
             accountChart,
           })
@@ -49,7 +61,7 @@ export const AccountForm = ({ close, accountId, accountChart }: Props) => {
         await dispatch(
           editAccountTemplate({
             id: accountId,
-            changes: { name, number, nonDeductibleTax, accountChart },
+            changes: { name, number, category, nonDeductibleTax, accountChart },
           })
         ).unwrap();
       }
@@ -71,6 +83,14 @@ export const AccountForm = ({ close, accountId, accountChart }: Props) => {
         label="Number"
         {...form.getInputProps("number")}
         required
+      />
+      <Select
+        placeholder="Select Category"
+        label="category"
+        data={dataSelect}
+        {...form.getInputProps("category")}
+        required
+        searchable
       />
       <Checkbox
         label="Non Deductible tax"

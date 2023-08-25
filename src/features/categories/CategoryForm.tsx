@@ -59,6 +59,7 @@ export const CategoryForm = ({ close, categoryId }: Props) => {
           { value: "PL", label: "Profit and Loss" },
         ]}
         {...form.getInputProps("document")}
+        required
       />
       <Button type="submit" mt={"md"} fullWidth>
         Save
