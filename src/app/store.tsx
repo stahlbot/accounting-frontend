@@ -3,6 +3,7 @@ import currentUserReducer from "../features/login/currentUserSlice";
 import usersReducer from "../features/user/userSlice";
 import clientsReducer from "../features/clients/clientsSlice";
 import accountChartsSliceReducer from "../features/accountCharts/accountChartsSlice";
+import accountsSliceReducer from "../features/accounts/accountsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     users: usersReducer,
     clients: clientsReducer,
     accountCharts: accountChartsSliceReducer,
+    accounts: accountsSliceReducer,
   },
 });
 
