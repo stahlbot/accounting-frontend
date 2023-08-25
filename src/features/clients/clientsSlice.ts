@@ -19,6 +19,7 @@ type Client = {
   number: string;
   createdAt: string;
   clerk: string;
+  accountChart: string;
 };
 
 const clientsAdapter = createEntityAdapter<Client>({

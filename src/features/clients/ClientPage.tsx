@@ -2,6 +2,7 @@ import { Tabs, Text } from "@mantine/core";
 import { useAppSelector } from "../../app/hooks";
 import { selectClientById } from "./clientsSlice";
 import { useParams } from "react-router-dom";
+import ClientAccountsPage from "./ClientAccountsPage";
 
 export const ClientPage = () => {
   const params = useParams();
@@ -18,26 +19,24 @@ export const ClientPage = () => {
   const client = useAppSelector((state) =>
     selectClientById(state, params.clientId!)
   );
-  console.log(client);
   if (client) {
     return (
-      <Tabs defaultValue="gallery">
+      <Tabs defaultValue="accountlist">
         <Tabs.List>
           <Text>{client.name} - </Text>
-          <Text>Enterprise Selector - </Text>
           <Text>Year Selector: </Text>
-          <Tabs.Tab value="bookinglist">Bookings</Tabs.Tab>
           <Tabs.Tab value="accountlist">Accounts</Tabs.Tab>
+          <Tabs.Tab value="bookinglist">Bookings</Tabs.Tab>
           <Tabs.Tab value="balance">Balance</Tabs.Tab>
           <Tabs.Tab value="profitloss">Profit and Loss</Tabs.Tab>
           <Tabs.Tab value="settings">Settings</Tabs.Tab>
         </Tabs.List>
 
+        <Tabs.Panel value="accountlist" pt="xs">
+          <ClientAccountsPage accountChartId={client.accountChart} />
+        </Tabs.Panel>
         <Tabs.Panel value="bookinglist" pt="xs">
           Booking tab content
-        </Tabs.Panel>
-        <Tabs.Panel value="accountlist" pt="xs">
-          Account tab content
         </Tabs.Panel>
         <Tabs.Panel value="balance" pt="xs">
           Balance tab content
