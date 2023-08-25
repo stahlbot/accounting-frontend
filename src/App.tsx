@@ -14,6 +14,7 @@ import ClientsPage from "./features/clients/ClientsPage";
 import { fetchUsers } from "./features/user/userSlice";
 import { RootState } from "./app/store";
 import { ClientPage } from "./features/clients/ClientPage";
+import { SettingsPage } from "./features/settings/Settings";
 
 // import './App.css'
 
@@ -88,6 +89,16 @@ function App() {
                   isAuthenticated={isAuthenticated}
                   authenticationPath="/login"
                   outlet={<ClientPage />}
+                />
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  authenticationPath="/login"
+                  outlet={<SettingsPage />}
                 />
               }
             />
