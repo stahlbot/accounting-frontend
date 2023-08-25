@@ -42,7 +42,6 @@ export const AccountChartPage = () => {
   // when component unmounts reset the accounts
   useEffect(() => {
     return () => {
-      console.log("cleanup");
       dispatch(clearAccountsState());
     };
   }, [dispatch]);

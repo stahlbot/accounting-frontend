@@ -14,6 +14,7 @@ interface Account {
   id: string;
   name: string;
   number: string;
+  nonDeductibleTax: boolean;
   accountChart: string;
 }
 
@@ -50,8 +51,8 @@ const accountsSlice = createSlice({
       )
       .addCase(fetchAccountsTemplate.rejected, (state) => {
         state.status = "failed";
-      });
-    // .addCase(addAccount.fulfilled, accountsAdapter.addOne)
+      })
+      .addCase(addAccountTemplate.fulfilled, accountsAdapter.addOne);
     // .addCase(deleteAccount.fulfilled, accountsAdapter.removeOne)
     // .addCase(editAccount.fulfilled, (state, action) => {
     //   accountsAdapter.updateOne(state, action.payload);
@@ -97,20 +98,21 @@ export const fetchAccountsTemplate = createAsyncThunk(
   }
 );
 
-// export const addAccountChart = createAsyncThunk(
-//   "accountChart/addAccountChart",
-//   async (accountChart: {
-//     name: string;
-//     isTemplate: boolean | string;
-//     client: string;
-//   }) => {
-//     const response = await axiosInstance.post(
-//       "/api/v1/account-charts/",
-//       accountChart
-//     );
-//     return response.data;
-//   }
-// );
+export const addAccountTemplate = createAsyncThunk(
+  "accounts/addAccountTemplate",
+  async (account: {
+    name: string;
+    number: string;
+    nonDeductibleTax: boolean;
+    accountChart: number;
+  }) => {
+    const response = await axiosInstance.post(
+      `/api/v1/account-charts/${account.accountChart}/accounts/`,
+      account
+    );
+    return response.data;
+  }
+);
 
 //   export const editAccountChart = createAsyncThunk(
 //     "accountCharts/editAccountChart",

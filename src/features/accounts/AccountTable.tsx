@@ -6,6 +6,9 @@ import { useSelector } from "react-redux";
 import { selectAccountChartById } from "../accountCharts/accountChartsSlice";
 import { useEffect } from "react";
 import { clearAccountsState } from "./accountsSlice";
+import { useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
+import { AccountForm } from "./AccountForm";
 
 export const AccountTable = ({
   accounts,
@@ -16,7 +19,7 @@ export const AccountTable = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  //   const [opened, { open, close }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false);
   //   const [accountChartEdited, setAccountChartEdited] = useState<string>("");
 
   const accountChart = useAppSelector((state) =>
@@ -26,6 +29,7 @@ export const AccountTable = ({
   const columns = [
     { accessorkey: "name", header: "Name" },
     { accessorkey: "number", header: "Number" },
+    { accessorkey: "nonDeductibleTax", header: "Non deductible Tax" },
   ];
 
   const onOpen = (id) => {
@@ -43,9 +47,9 @@ export const AccountTable = ({
 
   return (
     <>
-      {/* <Modal opened={opened} onClose={close} title="Add Account Chart Template">
-        <AccountChartForm close={close} accountChartId={accountChartEdited} />
-      </Modal> */}
+      <Modal opened={opened} onClose={close} title="Add Account Template">
+        <AccountForm close={close} accountChart={accountChart!.id} />
+      </Modal>
       <PowerTable
         columns={columns}
         RowTemplate={AccountRow}
@@ -54,10 +58,10 @@ export const AccountTable = ({
         setSortBy={setSortBy}
         sortBy={sortBy}
         onOpen={onOpen}
-        // onAdd={() => {
-        //   open();
-        //   setAccountChartEdited("");
-        // }}
+        onAdd={() => {
+          open();
+          //   setAccountChartEdited("");
+        }}
         // onEdit={onEdit}
         // onDelete={onDelete}
       ></PowerTable>

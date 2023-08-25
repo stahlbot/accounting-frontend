@@ -9,6 +9,7 @@ export default function AccountRow({ id, children }) {
       {children}
       <td>{account.name}</td>
       <td>{account.number}</td>
+      <td>{account.nonDeductibleTax ? "Yes" : "No"}</td>
     </tr>
   );
 }
