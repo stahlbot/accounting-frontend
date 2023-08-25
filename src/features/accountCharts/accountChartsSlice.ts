@@ -4,7 +4,7 @@ import {
   createEntityAdapter,
   createSelector,
 } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import type { PayloadAction, Update } from "@reduxjs/toolkit";
 // import type { RootState } from '../../app/store'
 import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
@@ -13,7 +13,7 @@ import { sortStringsAndNumbers } from "../../app/sort";
 interface AccountChart {
   id: string;
   name: string;
-  isTemplate: boolean;
+  isTemplate: boolean | string;
 }
 
 const accountChartsAdapter = createEntityAdapter<AccountChart>({
@@ -43,7 +43,12 @@ const accountChartsSlice = createSlice({
       .addCase(fetchAccountChartTemplates.rejected, (state) => {
         state.status = "failed";
       })
-      .addCase(addAccountChart.fulfilled, accountChartsAdapter.addOne);
+      .addCase(addAccountChart.fulfilled, accountChartsAdapter.addOne)
+      .addCase(deleteAccountChart.fulfilled, accountChartsAdapter.removeOne)
+      .addCase(editAccountChart.fulfilled, (state, action) => {
+        accountChartsAdapter.updateOne(state, action.payload);
+        // console.log(current(state.entities));
+      });
   },
 });
 
@@ -90,5 +95,26 @@ export const addAccountChart = createAsyncThunk(
       accountChart
     );
     return response.data;
+  }
+);
+
+export const editAccountChart = createAsyncThunk(
+  "accountCharts/editAccountChart",
+  async (accountChart: Update<AccountChart>) => {
+    const response = await axiosInstance.patch(
+      `/api/v1/account-charts/${accountChart.id}/`,
+      accountChart.changes
+    );
+    return accountChart;
+  }
+);
+
+export const deleteAccountChart = createAsyncThunk(
+  "accountChart/deleteAccountChart",
+  async (accountChartId: string) => {
+    const response = await axiosInstance.delete(
+      `/api/v1/account-charts/${accountChartId}`
+    );
+    return accountChartId;
   }
 );

@@ -4,11 +4,16 @@ import AccountChartRow from "./AccountChartRow";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AccountChartForm } from "./AccountChartForm";
+import { useAppDispatch } from "../../app/hooks";
+import { deleteAccountChart } from "./accountChartsSlice";
+import { useState } from "react";
 
 export const AccountChartTable = ({ accountCharts, sortBy, setSortBy }) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [opened, { open, close }] = useDisclosure(false);
+  const [accountChartEdited, setAccountChartEdited] = useState<string>("");
 
   const columns = [
     { accessorkey: "name", header: "Name" },
@@ -19,10 +24,19 @@ export const AccountChartTable = ({ accountCharts, sortBy, setSortBy }) => {
     navigate(`/settings/account-charts/${id}`);
   };
 
+  const onEdit = (id) => {
+    setAccountChartEdited(id);
+    open();
+  };
+
+  const onDelete = async (id) => {
+    await dispatch(deleteAccountChart(id)).unwrap();
+  };
+
   return (
     <>
       <Modal opened={opened} onClose={close} title="Add Account Chart Template">
-        <AccountChartForm close={close} />
+        <AccountChartForm close={close} accountChartId={accountChartEdited} />
       </Modal>
       <PowerTable
         columns={columns}
@@ -34,7 +48,10 @@ export const AccountChartTable = ({ accountCharts, sortBy, setSortBy }) => {
         onOpen={onOpen}
         onAdd={() => {
           open();
+          setAccountChartEdited("");
         }}
+        onEdit={onEdit}
+        onDelete={onDelete}
       ></PowerTable>
     </>
   );

@@ -1,6 +1,10 @@
 import { useForm } from "@mantine/form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { addAccountChart, selectAccountChartById } from "./accountChartsSlice";
+import {
+  addAccountChart,
+  editAccountChart,
+  selectAccountChartById,
+} from "./accountChartsSlice";
 import { Button, TextInput, Checkbox } from "@mantine/core";
 
 interface Props {
@@ -31,13 +35,12 @@ export const AccountChartForm = ({ close, accountChartId }: Props) => {
   const submit = form.onSubmit(async ({ name, isTemplate, client }) => {
     if (!accountChartId) {
       await dispatch(addAccountChart({ name, isTemplate, client })).unwrap();
+    } else {
+      await dispatch(
+        editAccountChart({ id: accountChartId, changes: { name, isTemplate } })
+      ).unwrap();
     }
-    // else {
-    //   await dispatch(
-    //     editClient({ id: clientId, changes: { name, number, clerk } })
-    //   ).unwrap();
-    // }
-    // console.log(client);
+    console.log(client);
     close();
   });
 
