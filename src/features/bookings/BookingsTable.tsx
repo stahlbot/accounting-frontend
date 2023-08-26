@@ -1,7 +1,7 @@
 import PowerTable from "../tables/PowerTable";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import BookingRow from "./BookingRow";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { deleteBooking } from "./bookingsSlice";
@@ -31,6 +31,8 @@ export const BookingTable = ({
   //     selectAccountChartById(state, accountChartId)
   //   );
 
+  const clientId = useParams().clientId!;
+
   const columns = [
     { accessorkey: "isCommited", header: "*" },
     { accessorkey: "value", header: "Value" },
@@ -49,11 +51,9 @@ export const BookingTable = ({
     setBookingEdited(id);
   };
 
-  //   const onDelete = async (id: string) => {
-  //     await dispatch(
-  //       deleteBooking({ bookingId: id, clientId })
-  //     ).unwrap();
-  //   };
+  const onDelete = async (id: string) => {
+    await dispatch(deleteBooking({ bookingId: id, clientId })).unwrap();
+  };
 
   return (
     <>
@@ -73,12 +73,8 @@ export const BookingTable = ({
           setSortBy={setSortBy}
           sortBy={sortBy}
           // onOpen={onOpen}
-          // onAdd={() => {
-          //   open();
-          //   setAccountEdited("");
-          // }}
           onEdit={onEdit}
-          // onDelete={onDelete}
+          onDelete={onDelete}
         />
       </ScrollArea.Autosize>
     </>
