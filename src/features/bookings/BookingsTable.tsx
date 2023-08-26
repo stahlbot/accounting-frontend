@@ -12,14 +12,20 @@ interface Props {
   bookings: string[];
   sortBy: string;
   setSortBy: Function;
+  setBookingEdited: Function;
 }
 
-export const BookingTable = ({ bookings, sortBy, setSortBy }: Props) => {
+export const BookingTable = ({
+  bookings,
+  sortBy,
+  setSortBy,
+  setBookingEdited,
+}: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   //   const [opened, { open, close }] = useDisclosure(false);
-  const [bookingEdited, setBookingEdited] = useState<string>("");
+  //   const [bookingEdited, setBookingEdited] = useState<string>("");
 
   //   const accountChart = useAppSelector((state) =>
   //     selectAccountChartById(state, accountChartId)
@@ -39,10 +45,9 @@ export const BookingTable = ({ bookings, sortBy, setSortBy }: Props) => {
   //     navigate(`/settings/account-charts/${accountChartId}/account/${id}`);
   //   };
 
-  //   const onEdit = (id) => {
-  //     setBookingEdited(id);
-  //     open();
-  //   };
+  const onEdit = (id) => {
+    setBookingEdited(id);
+  };
 
   //   const onDelete = async (id: string) => {
   //     await dispatch(
@@ -72,7 +77,7 @@ export const BookingTable = ({ bookings, sortBy, setSortBy }: Props) => {
           //   open();
           //   setAccountEdited("");
           // }}
-          // onEdit={onEdit}
+          onEdit={onEdit}
           // onDelete={onDelete}
         />
       </ScrollArea.Autosize>

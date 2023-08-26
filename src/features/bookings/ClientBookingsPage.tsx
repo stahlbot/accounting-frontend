@@ -6,6 +6,7 @@ import BookingForm from "./BookingForm";
 import { ScrollArea } from "@mantine/core";
 
 export default function ClientBookingsPage({ clientId }) {
+  const [bookingEdited, setBookingEdited] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("name");
   const bookings = useSelector((state) =>
     selectBookingIdsSortedBy(state, {
@@ -16,8 +17,13 @@ export default function ClientBookingsPage({ clientId }) {
 
   return (
     <>
-      <BookingTable bookings={bookings} sortBy={sortBy} setSortBy={setSortBy} />
-      <BookingForm />
+      <BookingTable
+        bookings={bookings}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        setBookingEdited={setBookingEdited}
+      />
+      <BookingForm bookingEditedId={bookingEdited} />
     </>
   );
 }

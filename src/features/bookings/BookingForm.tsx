@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectClientById } from "../clients/clientsSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   selectAccountIdsSortedBy,
@@ -49,39 +49,74 @@ export default function BookingForm({ bookingEditedId }: Props) {
   });
 
   // Edit Booking Stuff
-  const bookingEdited = bookingEditedId
-    ? useAppSelector((state) => selectBookingById(state, bookingEditedId!))
-    : {};
+  const bookingEdited = useAppSelector((state) =>
+    selectBookingById(state, bookingEditedId!)
+  );
+
+  //   console.log(bookingEdited);
 
   // Form Stuff
-  const form = useForm({
-    initialValues: {
-      value: undefined,
+  let form;
+  let submit;
+  if (!bookingEdited) {
+    const initialValues = {
+      value: "",
       credit: "",
       invoiceNr: "",
       date: new Date(),
       debit: "",
       text: "",
-    },
-  });
-  const submit = form.onSubmit(
-    async ({ value, credit, invoiceNr, date, debit, text }) => {
-      if (!bookingEditedId) {
-        await dispatch(
-          addBooking({
-            value,
-            credit,
-            invoiceNr,
-            date: format(date, "yyyy-MM-dd"),
-            debit,
-            text,
-            client: clientId,
-            isCommited: false,
-          })
-        );
+    };
+    // console.log(initialValues);
+    form = useForm({
+      initialValues: initialValues,
+    });
+    // console.log(form.values);
+    submit = form.onSubmit(
+      async ({ value, credit, invoiceNr, date, debit, text }) => {
+        if (!bookingEditedId) {
+          await dispatch(
+            addBooking({
+              value,
+              credit,
+              invoiceNr,
+              date: format(date, "yyyy-MM-dd"),
+              debit,
+              text,
+              client: clientId,
+              isCommited: false,
+            })
+          );
+        }
       }
+    );
+  } else {
+    const initialValues = {
+      ...bookingEdited,
+      date: new Date(bookingEdited.date),
+    };
+    // console.log(initialValues);
+    form = useForm({
+      initialValues: initialValues,
+    });
+    // console.log(form.values);
+
+    // console.log(form.values);
+    submit = form.onSubmit(() => {
+      console.log("save edit");
+    });
+  }
+
+  // I don't know why I have to use this hacky solution but otherwise the form wouldn't update its state to the edited booking
+  useEffect(() => {
+    if (bookingEdited) {
+      const initialValues = {
+        ...bookingEdited,
+        date: new Date(bookingEdited.date),
+      };
+      form.setValues(initialValues);
     }
-  );
+  }, [bookingEditedId]);
 
   return (
     <form onSubmit={submit}>
@@ -93,7 +128,7 @@ export default function BookingForm({ bookingEditedId }: Props) {
               label="Value"
               precision={2}
               hideControls
-              required
+              //   required
               {...form.getInputProps("value")}
             />
           </Grid.Col>
@@ -102,7 +137,7 @@ export default function BookingForm({ bookingEditedId }: Props) {
               label="Credit"
               data={accountSelectData}
               searchable
-              required
+              //   required
               {...form.getInputProps("credit")}
             />
           </Grid.Col>
@@ -111,7 +146,7 @@ export default function BookingForm({ bookingEditedId }: Props) {
             <TextInput
               placeholder=""
               label="Invoice Nr."
-              required
+              //   required
               {...form.getInputProps("invoiceNr")}
             />
           </Grid.Col>
@@ -123,7 +158,7 @@ export default function BookingForm({ bookingEditedId }: Props) {
                 return parseISO(input);
               }}
               label="Date"
-              required
+              //   required
               {...form.getInputProps("date")}
             />
           </Grid.Col>
@@ -133,7 +168,7 @@ export default function BookingForm({ bookingEditedId }: Props) {
               label="Debit"
               data={accountSelectData}
               searchable
-              required
+              //   required
               {...form.getInputProps("debit")}
             />
           </Grid.Col>
@@ -142,7 +177,7 @@ export default function BookingForm({ bookingEditedId }: Props) {
             <TextInput
               placeholder=""
               label="Text"
-              required
+              //   required
               {...form.getInputProps("text")}
             />
           </Grid.Col>
