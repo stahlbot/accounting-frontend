@@ -13,6 +13,8 @@ import {
 import { RootState } from "../../app/store";
 import CopyAccountChart from "../accountCharts/CopyAccountChart";
 import { fetchCategories } from "../categories/categoriesSlice";
+import { fetchBookings } from "../bookings/bookingsSlice";
+import ClientBookingsPage from "../bookings/ClientBookingsPage";
 
 export const ClientPage = () => {
   const params = useParams();
@@ -47,6 +49,24 @@ export const ClientPage = () => {
     };
   }, [dispatch]);
 
+  // Fetch Bookings of the client if not in already in state
+  const bookingsStatus = useSelector<RootState, string>(
+    (state) => state.bookings.status
+  );
+  const clientsBookingsLoaded: string[] = useSelector<RootState, string>(
+    (state) => state.bookings.loadedClients
+  );
+
+  useEffect(() => {
+    if (
+      // bookingsStatus === "idle" &&
+      client?.accountChart &&
+      !clientsBookingsLoaded.includes(String(params.clientId))
+    ) {
+      dispatch(fetchBookings(params.clientId!));
+    }
+  }, [dispatch, clientsBookingsLoaded, client]);
+
   // Fetch Categories if not done yet
   const categoriesStatus = useSelector<RootState, string>(
     (state) => state.categories.status
@@ -59,37 +79,39 @@ export const ClientPage = () => {
 
   if (client) {
     return (
-      <Tabs defaultValue="accountlist">
-        <Tabs.List>
-          <Text>{client.name} - </Text>
-          <Text>Year Selector: </Text>
-          <Tabs.Tab value="accountlist">Accounts</Tabs.Tab>
-          <Tabs.Tab value="bookinglist">Bookings</Tabs.Tab>
-          <Tabs.Tab value="balance">Balance</Tabs.Tab>
-          <Tabs.Tab value="profitloss">Profit and Loss</Tabs.Tab>
-          <Tabs.Tab value="settings">Settings</Tabs.Tab>
-        </Tabs.List>
+      <>
+        {client.accountChart ? (
+          <Tabs defaultValue="accountlist">
+            <Tabs.List>
+              <Text>{client.name} - </Text>
+              <Text>Year Selector: </Text>
+              <Tabs.Tab value="accountlist">Accounts</Tabs.Tab>
+              <Tabs.Tab value="bookinglist">Bookings</Tabs.Tab>
+              <Tabs.Tab value="balance">Balance</Tabs.Tab>
+              <Tabs.Tab value="profitloss">Profit and Loss</Tabs.Tab>
+              <Tabs.Tab value="settings">Settings</Tabs.Tab>
+            </Tabs.List>
 
-        <Tabs.Panel value="accountlist" pt="xs">
-          {client.accountChart ? (
-            <ClientAccountsPage accountChartId={client.accountChart} />
-          ) : (
-            <CopyAccountChart />
-          )}
-        </Tabs.Panel>
-        <Tabs.Panel value="bookinglist" pt="xs">
-          Booking tab content
-        </Tabs.Panel>
-        <Tabs.Panel value="balance" pt="xs">
-          Balance tab content
-        </Tabs.Panel>
-        <Tabs.Panel value="profitloss" pt="xs">
-          Profit and Loss tab content
-        </Tabs.Panel>
-        <Tabs.Panel value="settings" pt="xs">
-          Settings tab content
-        </Tabs.Panel>
-      </Tabs>
+            <Tabs.Panel value="accountlist" pt="xs">
+              <ClientAccountsPage accountChartId={client.accountChart} />
+            </Tabs.Panel>
+            <Tabs.Panel value="bookinglist" pt="xs">
+              <ClientBookingsPage clientId={params.clientId!} />
+            </Tabs.Panel>
+            <Tabs.Panel value="balance" pt="xs">
+              Balance tab content
+            </Tabs.Panel>
+            <Tabs.Panel value="profitloss" pt="xs">
+              Profit and Loss tab content
+            </Tabs.Panel>
+            <Tabs.Panel value="settings" pt="xs">
+              Settings tab content
+            </Tabs.Panel>
+          </Tabs>
+        ) : (
+          <CopyAccountChart />
+        )}
+      </>
     );
   } else {
     return "Loading";

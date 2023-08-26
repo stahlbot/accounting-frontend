@@ -10,7 +10,7 @@ import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
 import { sortStringsAndNumbers } from "../../app/sort";
 
-interface Booking {
+export interface Booking {
   id: string;
   debit: string;
   credit: string;
@@ -28,12 +28,21 @@ const bookingsAdapter = createEntityAdapter<Booking>({
   sortComparer: (a, b) => a.createdAt.localeCompare(b.createdAt),
 });
 
+interface AdditionalState {
+  status: string;
+  error: string | null;
+  loadedClients: string[];
+}
+
+const initialState: AdditionalState = {
+  status: "idle",
+  error: null,
+  loadedClients: [],
+};
+
 const bookingsSlice = createSlice({
   name: "bookings",
-  initialState: bookingsAdapter.getInitialState({
-    status: "idle",
-    error: null,
-  }),
+  initialState: bookingsAdapter.getInitialState(initialState),
   reducers: {},
   extraReducers(builder) {
     builder
@@ -42,9 +51,13 @@ const bookingsSlice = createSlice({
       })
       .addCase(
         fetchBookings.fulfilled,
-        (state, action: PayloadAction<Booking[]>) => {
+        (
+          state,
+          action: PayloadAction<{ data: Booking[]; clientId: string }>
+        ) => {
           state.status = "succeeded";
-          bookingsAdapter.upsertMany(state, action.payload);
+          bookingsAdapter.upsertMany(state, action.payload.data);
+          state.loadedClients.push(action.payload.clientId);
         }
       )
       .addCase(fetchBookings.rejected, (state) => {
@@ -68,9 +81,16 @@ export const {
 } = bookingsAdapter.getSelectors((state: RootState) => state.bookings);
 
 export const selectBookingIdsSortedBy = createSelector(
-  [selectAllBookings, (state, sortBy) => sortBy],
-  (bookings, sortBy) => {
-    const bookingsSorted = bookings.sort((a, b) =>
+  [
+    selectAllBookings,
+    (state, props) => props.sortBy,
+    (state, props) => props.clientId,
+  ],
+  (bookings, sortBy, clientId) => {
+    const bookingsFiltered = bookings.filter(
+      (booking: Booking) => booking.client == clientId
+    );
+    const bookingsSorted = bookingsFiltered.sort((a, b) =>
       sortStringsAndNumbers(a, b, sortBy)
     );
     return bookingsSorted.map((c) => c.id);
@@ -79,12 +99,12 @@ export const selectBookingIdsSortedBy = createSelector(
 
 export const fetchBookings = createAsyncThunk(
   "bookings/fetchBookings",
-  async (clientId) => {
+  async (clientId: string) => {
     const response = await axiosInstance.get(
       `/api/v1/clients/${clientId}/bookings`
     );
     // const response = await axios.get("/api/v1/users", {headers: {Authorization: `Bearer ${token}`}})
-    return response.data;
+    return { data: response.data, clientId };
   }
 );
 
