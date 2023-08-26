@@ -8,7 +8,7 @@ import {
   selectClientAccountsSortedBy,
 } from "../accounts/accountsSlice";
 import { useForm } from "@mantine/form";
-import { addBooking, selectBookingById } from "./bookingsSlice";
+import { addBooking, editBooking, selectBookingById } from "./bookingsSlice";
 import {
   Button,
   Card,
@@ -22,9 +22,13 @@ import { format, formatISO, parseISO } from "date-fns";
 
 interface Props {
   bookingEditedId?: string;
+  setBookingEdited: Function;
 }
 
-export default function BookingForm({ bookingEditedId }: Props) {
+export default function BookingForm({
+  bookingEditedId,
+  setBookingEdited,
+}: Props) {
   // General Stuff
   const dispatch = useAppDispatch();
 
@@ -86,7 +90,9 @@ export default function BookingForm({ bookingEditedId }: Props) {
               client: clientId,
               isCommited: false,
             })
-          );
+          )
+            .unwrap()
+            .then(form.reset());
         }
       }
     );
@@ -102,9 +108,38 @@ export default function BookingForm({ bookingEditedId }: Props) {
     // console.log(form.values);
 
     // console.log(form.values);
-    submit = form.onSubmit(() => {
-      console.log("save edit");
-    });
+    submit = form.onSubmit(
+      async ({ value, credit, invoiceNr, date, debit, text }) => {
+        console.log("save edit");
+        await dispatch(
+          editBooking({
+            id: bookingEdited.id,
+            changes: {
+              value,
+              credit,
+              invoiceNr,
+              date: format(date, "yyyy-MM-dd"),
+              debit,
+              text,
+              client: bookingEdited.client,
+            },
+          })
+        )
+          .unwrap()
+          .then(() => {
+            setBookingEdited("");
+            // form.reset();
+            form.setValues({
+              value: "",
+              credit: "",
+              invoiceNr: "",
+              date: new Date(),
+              debit: "",
+              text: "",
+            });
+          });
+      }
+    );
   }
 
   // I don't know why I have to use this hacky solution but otherwise the form wouldn't update its state to the edited booking

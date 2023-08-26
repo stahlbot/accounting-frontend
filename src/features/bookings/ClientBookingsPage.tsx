@@ -23,7 +23,10 @@ export default function ClientBookingsPage({ clientId }) {
         setSortBy={setSortBy}
         setBookingEdited={setBookingEdited}
       />
-      <BookingForm bookingEditedId={bookingEdited} />
+      <BookingForm
+        bookingEditedId={bookingEdited}
+        setBookingEdited={setBookingEdited}
+      />
     </>
   );
 }
