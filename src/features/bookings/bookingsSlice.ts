@@ -93,7 +93,7 @@ export const selectBookingIdsSortedBy = createSelector(
     const bookingsSorted = bookingsFiltered.sort((a, b) =>
       sortStringsAndNumbers(a, b, sortBy)
     );
-    return bookingsSorted.map((c) => c.id);
+    return bookingsSorted.reverse().map((c) => c.id);
   }
 );
 
