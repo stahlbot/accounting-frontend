@@ -56,6 +56,7 @@ const PowerTable = ({
   search,
   setSearch,
 }: Props) => {
+  const { classes, cx } = useStyles();
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [selection, setSelection] = useState<EntityId[]>([]);
 
@@ -175,8 +176,8 @@ const PowerTable = ({
         )}
       </Flex>
       {/* <Divider my="sm" /> */}
-      <Table striped highlightOnHover withBorder withColumnBorders>
-        <thead>
+      <Table highlightOnHover withBorder withColumnBorders striped>
+        <thead className={cx(classes.header)}>
           <tr key="header">
             <th style={{ width: rem(40) }}>
               <Checkbox
@@ -217,7 +218,7 @@ interface ThProps {
 }
 
 function Th({ children, reversed, sorted, onSort, sortBy }: ThProps) {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
   const Icon = sorted
     ? reversed
       ? IconChevronUp
@@ -268,6 +269,27 @@ const useStyles = createStyles((theme) => ({
     width: rem(21),
     height: rem(21),
     borderRadius: rem(21),
+  },
+
+  header: {
+    position: "sticky",
+    top: 0,
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+    transition: "box-shadow 150ms ease",
+
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderBottom: `${rem(1)} solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
+    },
   },
 }));
 

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { deleteBooking } from "./bookingsSlice";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal } from "@mantine/core";
+import { Modal, ScrollArea } from "@mantine/core";
 
 interface Props {
   bookings: string[];
@@ -59,21 +59,23 @@ export const BookingTable = ({ bookings, sortBy, setSortBy }: Props) => {
           accountId={accountEdited}
         />
       </Modal> */}
-      <PowerTable
-        columns={columns}
-        RowTemplate={BookingRow}
-        data={bookings}
-        title={`Bookings`}
-        setSortBy={setSortBy}
-        sortBy={sortBy}
-        // onOpen={onOpen}
-        // onAdd={() => {
-        //   open();
-        //   setAccountEdited("");
-        // }}
-        // onEdit={onEdit}
-        // onDelete={onDelete}
-      ></PowerTable>
+      <ScrollArea.Autosize mah={600} mx="auto">
+        <PowerTable
+          columns={columns}
+          RowTemplate={BookingRow}
+          data={bookings}
+          title={`Bookings`}
+          setSortBy={setSortBy}
+          sortBy={sortBy}
+          // onOpen={onOpen}
+          // onAdd={() => {
+          //   open();
+          //   setAccountEdited("");
+          // }}
+          // onEdit={onEdit}
+          // onDelete={onDelete}
+        />
+      </ScrollArea.Autosize>
     </>
   );
 };

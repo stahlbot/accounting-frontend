@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectBookingIdsSortedBy } from "./bookingsSlice";
 import { BookingTable } from "./BookingsTable";
 import BookingForm from "./BookingForm";
+import { ScrollArea } from "@mantine/core";
 
 export default function ClientBookingsPage({ clientId }) {
   const [sortBy, setSortBy] = useState<string>("name");
