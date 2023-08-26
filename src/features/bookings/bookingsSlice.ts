@@ -20,7 +20,7 @@ export interface Booking {
   text: string;
   invoiceNr: string;
   client: string;
-  isCommited: string;
+  isCommited: boolean;
 }
 
 const bookingsAdapter = createEntityAdapter<Booking>({

@@ -53,7 +53,7 @@ export const ClientPage = () => {
   const bookingsStatus = useSelector<RootState, string>(
     (state) => state.bookings.status
   );
-  const clientsBookingsLoaded: string[] = useSelector<RootState, string>(
+  const clientsBookingsLoaded: string[] = useSelector<RootState, string[]>(
     (state) => state.bookings.loadedClients
   );
 

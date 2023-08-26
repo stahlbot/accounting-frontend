@@ -86,6 +86,23 @@ export const selectAccountIdsSortedBy = createSelector(
   }
 );
 
+export const selectClientAccountsSortedBy = createSelector(
+  [
+    selectAllAccounts,
+    (state, props) => props.sortBy,
+    (state, props) => props.accountChartId,
+  ],
+  (accounts, sortBy, accountChartId) => {
+    const accountsFiltered = accounts.filter(
+      (account) => account.accountChart == accountChartId
+    );
+    const accountsSorted = accountsFiltered.sort((a, b) =>
+      sortStringsAndNumbers(a, b, sortBy)
+    );
+    return accountsSorted;
+  }
+);
+
 export const fetchAccountsTemplate = createAsyncThunk(
   "accounts/fetchAccountTemplates",
   async (accountChartId: string) => {
