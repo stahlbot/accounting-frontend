@@ -32,9 +32,9 @@ export const AccountTable = ({
   const [opened, { open, close }] = useDisclosure(false);
   const [accountEdited, setAccountEdited] = useState<string>("");
 
-  const accountChart = useAppSelector((state) =>
-    selectAccountChartById(state, accountChartId)
-  );
+  //   const accountChart = useAppSelector((state) =>
+  //     selectAccountChartById(state, accountChartId)
+  //   );
 
   const columns = [
     { accessorkey: "name", header: "Name" },
@@ -44,7 +44,7 @@ export const AccountTable = ({
   ];
 
   const onOpen = (id) => {
-    navigate(`/settings/account-charts/${accountChart!.id}/account/${id}`);
+    navigate(`/settings/account-charts/${accountChartId}/account/${id}`);
   };
 
   const onEdit = (id) => {
@@ -63,7 +63,7 @@ export const AccountTable = ({
       <Modal opened={opened} onClose={close} title="Add Account Template">
         <AccountForm
           close={close}
-          accountChart={accountChart!.id}
+          accountChart={accountChartId}
           accountId={accountEdited}
         />
       </Modal>
@@ -71,7 +71,7 @@ export const AccountTable = ({
         columns={columns}
         RowTemplate={AccountRow}
         data={accounts}
-        title={`Accounts of Account Chart ${accountChart!.name}`}
+        title={`Accounts`}
         setSortBy={setSortBy}
         sortBy={sortBy}
         onOpen={onOpen}

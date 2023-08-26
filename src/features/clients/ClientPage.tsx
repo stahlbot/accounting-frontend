@@ -11,6 +11,8 @@ import {
   selectAccountIdsSortedBy,
 } from "../accounts/accountsSlice";
 import { RootState } from "../../app/store";
+import CopyAccountChart from "../accountCharts/CopyAccountChart";
+import { fetchCategories } from "../categories/categoriesSlice";
 
 export const ClientPage = () => {
   const params = useParams();
@@ -29,29 +31,31 @@ export const ClientPage = () => {
     selectClientById(state, params.clientId!)
   );
 
-  const [sortBy, setSortBy] = useState<string>("name");
-  const accounts = useSelector((state) =>
-    selectAccountIdsSortedBy(state, {
-      sortBy: sortBy,
-      accountChartId: client!.accountChart,
-    })
-  );
-
+  // Fetch Accounts for this client
   const accountsStatus = useSelector<RootState, string>(
     (state) => state.accounts.status
   );
-
   useEffect(() => {
     if (accountsStatus === "idle" && client?.accountChart) {
       dispatch(fetchAccountsTemplate(client.accountChart));
     }
   }, [dispatch, accountsStatus, client]);
-
+  // Reset Accounts after leaving
   useEffect(() => {
     return () => {
       dispatch(clearAccountsState());
     };
   }, [dispatch]);
+
+  // Fetch Categories if not done yet
+  const categoriesStatus = useSelector<RootState, string>(
+    (state) => state.categories.status
+  );
+  useEffect(() => {
+    if (categoriesStatus === "idle") {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categoriesStatus]);
 
   if (client) {
     return (
@@ -67,7 +71,11 @@ export const ClientPage = () => {
         </Tabs.List>
 
         <Tabs.Panel value="accountlist" pt="xs">
-          <ClientAccountsPage accountChartId={client.accountChart} />
+          {client.accountChart ? (
+            <ClientAccountsPage accountChartId={client.accountChart} />
+          ) : (
+            <CopyAccountChart />
+          )}
         </Tabs.Panel>
         <Tabs.Panel value="bookinglist" pt="xs">
           Booking tab content
