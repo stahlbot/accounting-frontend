@@ -14,6 +14,7 @@ import { Modal } from "@mantine/core";
 import AddClientForm from "./AddClientForm";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../app/store";
+import { fetchUsers } from "../user/userSlice";
 
 const ClientsPage = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +37,16 @@ const ClientsPage = () => {
       dispatch(fetchClients());
     }
   }, [dispatch, clientsStatus]);
+
+  const usersStatus = useSelector<RootState, string>(
+    (state) => state.users.status
+  );
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, usersStatus]);
 
   const columns = [
     { accessorkey: "name", header: "Name" },
