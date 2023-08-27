@@ -146,25 +146,7 @@ const PowerTable = ({
         <Text fz={30} fw={700}>
           {title}
         </Text>
-        {onDelete && (
-          <Tooltip label="Delete Selected">
-            <ActionIcon
-              variant="default"
-              size={"md"}
-              color="red"
-              onClick={() => deleteSelected()}
-            >
-              <Trash />
-            </ActionIcon>
-          </Tooltip>
-        )}
-        {onAdd && (
-          <Tooltip label="Add New">
-            <ActionIcon variant="default" size={"md"} onClick={() => onAdd()}>
-              <Plus />
-            </ActionIcon>
-          </Tooltip>
-        )}
+
         {setSearch && (
           <TextInput
             placeholder="Search by any field"
@@ -180,14 +162,39 @@ const PowerTable = ({
         <thead className={cx(classes.header)}>
           <tr key="header">
             <th style={{ width: rem(40) }}>
-              <Checkbox
-                onChange={toggleAll}
-                checked={selection.length === data.length}
-                indeterminate={
-                  selection.length > 0 && selection.length !== data.length
-                }
-                transitionDuration={0}
-              />
+              <Flex gap={"sm"} justify="left" align={"center"}>
+                <Checkbox
+                  onChange={toggleAll}
+                  checked={selection.length === data.length}
+                  indeterminate={
+                    selection.length > 0 && selection.length !== data.length
+                  }
+                  transitionDuration={0}
+                />
+                {onAdd && (
+                  <Tooltip label="Add New">
+                    <ActionIcon
+                      variant="default"
+                      size={"sm"}
+                      onClick={() => onAdd()}
+                    >
+                      <Plus />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
+                {onDelete && (
+                  <Tooltip label="Delete Selected">
+                    <ActionIcon
+                      variant="default"
+                      size={"sm"}
+                      color="red"
+                      onClick={() => deleteSelected()}
+                    >
+                      <Trash />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
+              </Flex>
             </th>
             {columns.map((column) => (
               <Th
