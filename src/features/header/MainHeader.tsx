@@ -7,6 +7,7 @@ import {
   rem,
   Title,
   Button,
+  Grid,
 } from "@mantine/core";
 import { useSelector } from "react-redux";
 import {
@@ -145,16 +146,22 @@ export default function MainHeader(props) {
   return (
     <>
       <Header height={60} mb={10}>
-        <Container className={classes.header}>
-          <Title align="center">Accounting App</Title>
-          {isAuthenticated && (
-            <>
-              <Group spacing={5}>{items}</Group>
+        <Grid className={classes.header} justify="space-between">
+          <Grid.Col span={6}>
+            <Title>Accounting App</Title>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            {isAuthenticated && (
+              <>
+                <Group spacing={5}>
+                  {items}
 
-              <Button onClick={() => handleLogout()}>Logout</Button>
-            </>
-          )}
-        </Container>
+                  <Button onClick={() => handleLogout()}>Logout</Button>
+                </Group>
+              </>
+            )}
+          </Grid.Col>
+        </Grid>
       </Header>
       <Outlet />
     </>
