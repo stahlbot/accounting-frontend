@@ -6,7 +6,7 @@ import {
   selectAccountChartIdsSortedBy,
 } from "../accountCharts/accountChartsSlice";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import {
   fetchCategories,
@@ -19,23 +19,34 @@ export const SettingsPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  return (
-    <Tabs
-      value={useLocation()
-        .pathname.split("/")
-        .filter((str) => !/^\d+$/.test(str))
-        .pop()}
-      onTabChange={(value) => navigate(`/settings/${value}`)}
-    >
-      <Tabs.List>
-        <Text fz={30} fw={700}>
-          Settings{" "}
-        </Text>
-        <Tabs.Tab value="account-charts">Account Charts</Tabs.Tab>
-        <Tabs.Tab value="categories">Account Categories</Tabs.Tab>
-      </Tabs.List>
-      <Outlet />
-      {/* <Tabs.Panel value="accountcharts" pt="xs">
+  const accountChartsStatus = useAppSelector(
+    (state) => state.accountCharts.status
+  );
+
+  const accountChartsLoaded: boolean = accountChartsStatus === "succeeded";
+
+  const categoriesStatus = useAppSelector((state) => state.categories.status);
+
+  const categoriesLoaded: boolean = categoriesStatus === "succeeded";
+
+  if (accountChartsLoaded && categoriesLoaded) {
+    return (
+      <Tabs
+        value={useLocation()
+          .pathname.split("/")
+          .filter((str) => !/^\d+$/.test(str))
+          .pop()}
+        onTabChange={(value) => navigate(`/settings/${value}`)}
+      >
+        <Tabs.List>
+          <Text fz={30} fw={700}>
+            Settings{" "}
+          </Text>
+          <Tabs.Tab value="account-charts">Account Charts</Tabs.Tab>
+          <Tabs.Tab value="categories">Account Categories</Tabs.Tab>
+        </Tabs.List>
+        <Outlet />
+        {/* <Tabs.Panel value="accountcharts" pt="xs">
         <AccountChartTable
           accountCharts={accountCharts}
           sortBy={accountChartSortBy}
@@ -49,6 +60,9 @@ export const SettingsPage = () => {
           setSortBy={setCategorySortBy}
         />
       </Tabs.Panel> */}
-    </Tabs>
-  );
+      </Tabs>
+    );
+  } else {
+    return "Loading";
+  }
 };
