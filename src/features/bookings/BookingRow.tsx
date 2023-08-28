@@ -4,7 +4,7 @@ import { selectAccountById } from "../accounts/accountsSlice";
 import { selectCategoryById } from "../categories/categoriesSlice";
 import { selectBookingById } from "./bookingsSlice";
 
-export default function AccountRow({ id, children }) {
+export default function BookingRow({ id, children }) {
   const booking = useAppSelector((state) => selectBookingById(state, id))!;
 
   const credit = useAppSelector((state) =>

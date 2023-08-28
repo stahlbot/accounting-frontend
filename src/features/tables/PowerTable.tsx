@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { EntityId } from "@reduxjs/toolkit";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Link, Edit, Plus, Trash } from "tabler-icons-react";
 import {
   IconSelector,
@@ -29,9 +29,9 @@ interface Props {
     accessorkey: string;
     header: string;
   }[];
-  RowTemplate: React.ComponentType<{ id: EntityId; children }>;
-  data: EntityId[];
-  title: string;
+  RowTemplate: React.ComponentType<{ id: string; children }>;
+  data: string[];
+  title?: string;
   onDelete?: Function;
   onAdd?: Function;
   onOpen?: Function;
@@ -40,6 +40,7 @@ interface Props {
   sortBy?: string;
   search?: string;
   setSearch?: Function;
+  noSelect?: boolean;
 }
 
 const PowerTable = ({
@@ -55,6 +56,7 @@ const PowerTable = ({
   sortBy,
   search,
   setSearch,
+  noSelect,
 }: Props) => {
   const { classes, cx } = useStyles();
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
@@ -86,51 +88,59 @@ const PowerTable = ({
     // setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
+  const renderActionRow: boolean = Boolean(
+    !noSelect || onOpen || onEdit || onDelete || onAdd
+  );
+
   const rows = (reverseSortDirection ? [...data].reverse() : data).map((id) => (
     <RowTemplate key={id} id={id}>
-      <td>
-        <Flex gap={"sm"} justify="center" align={"center"}>
-          <Checkbox
-            checked={selection.includes(id)}
-            onChange={() => toggleRow(id)}
-            transitionDuration={0}
-            size="sm"
-          />
-          {onOpen && (
-            <Tooltip label="Open">
-              <ActionIcon
-                variant="default"
+      {renderActionRow && (
+        <td>
+          <Flex gap={"sm"} justify="center" align={"center"}>
+            {!noSelect && (
+              <Checkbox
+                checked={selection.includes(id)}
+                onChange={() => toggleRow(id)}
+                transitionDuration={0}
                 size="sm"
-                onClick={() => onOpen(id)}
-              >
-                <Link />
-              </ActionIcon>
-            </Tooltip>
-          )}
-          {onEdit && (
-            <Tooltip label="Edit">
-              <ActionIcon
-                variant="default"
-                size="sm"
-                onClick={() => onEdit(id)}
-              >
-                <Edit />
-              </ActionIcon>
-            </Tooltip>
-          )}
-          {onDelete && (
-            <Tooltip label="Delete">
-              <ActionIcon
-                variant="default"
-                size="sm"
-                onClick={() => onDelete(id)}
-              >
-                <Trash />
-              </ActionIcon>
-            </Tooltip>
-          )}
-        </Flex>
-      </td>
+              />
+            )}
+            {onOpen && (
+              <Tooltip label="Open">
+                <ActionIcon
+                  variant="default"
+                  size="sm"
+                  onClick={() => onOpen(id)}
+                >
+                  <Link />
+                </ActionIcon>
+              </Tooltip>
+            )}
+            {onEdit && (
+              <Tooltip label="Edit">
+                <ActionIcon
+                  variant="default"
+                  size="sm"
+                  onClick={() => onEdit(id)}
+                >
+                  <Edit />
+                </ActionIcon>
+              </Tooltip>
+            )}
+            {onDelete && (
+              <Tooltip label="Delete">
+                <ActionIcon
+                  variant="default"
+                  size="sm"
+                  onClick={() => onDelete(id)}
+                >
+                  <Trash />
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </Flex>
+        </td>
+      )}
     </RowTemplate>
   ));
 
@@ -161,41 +171,45 @@ const PowerTable = ({
       <Table highlightOnHover withBorder withColumnBorders striped>
         <thead className={cx(classes.header)}>
           <tr key="header">
-            <th style={{ width: rem(40) }}>
-              <Flex gap={"sm"} justify="left" align={"center"}>
-                <Checkbox
-                  onChange={toggleAll}
-                  checked={selection.length === data.length}
-                  indeterminate={
-                    selection.length > 0 && selection.length !== data.length
-                  }
-                  transitionDuration={0}
-                />
-                {onAdd && (
-                  <Tooltip label="Add New">
-                    <ActionIcon
-                      variant="default"
-                      size={"sm"}
-                      onClick={() => onAdd()}
-                    >
-                      <Plus />
-                    </ActionIcon>
-                  </Tooltip>
-                )}
-                {onDelete && (
-                  <Tooltip label="Delete Selected">
-                    <ActionIcon
-                      variant="default"
-                      size={"sm"}
-                      color="red"
-                      onClick={() => deleteSelected()}
-                    >
-                      <Trash />
-                    </ActionIcon>
-                  </Tooltip>
-                )}
-              </Flex>
-            </th>
+            {renderActionRow && (
+              <th style={{ width: rem(40) }}>
+                <Flex gap={"sm"} justify="left" align={"center"}>
+                  {!noSelect && (
+                    <Checkbox
+                      onChange={toggleAll}
+                      checked={selection.length === data.length}
+                      indeterminate={
+                        selection.length > 0 && selection.length !== data.length
+                      }
+                      transitionDuration={0}
+                    />
+                  )}
+                  {onAdd && (
+                    <Tooltip label="Add New">
+                      <ActionIcon
+                        variant="default"
+                        size={"sm"}
+                        onClick={() => onAdd()}
+                      >
+                        <Plus />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
+                  {onDelete && (
+                    <Tooltip label="Delete Selected">
+                      <ActionIcon
+                        variant="default"
+                        size={"sm"}
+                        color="red"
+                        onClick={() => deleteSelected()}
+                      >
+                        <Trash />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
+                </Flex>
+              </th>
+            )}
             {columns.map((column) => (
               <Th
                 sorted={sortBy === column.accessorkey}

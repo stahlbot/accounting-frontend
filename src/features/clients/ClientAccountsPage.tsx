@@ -5,6 +5,7 @@ import { AccountTable } from "../accounts/AccountTable";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectClientById } from "./clientsSlice";
+import { ClientAccountTable } from "../accounts/ClientAccountTable";
 
 export default function ClientAccountsPage() {
   const { clientId } = useParams();
@@ -22,7 +23,7 @@ export default function ClientAccountsPage() {
   );
 
   return (
-    <AccountTable
+    <ClientAccountTable
       accounts={accounts}
       sortBy={sortBy}
       setSortBy={setSortBy}

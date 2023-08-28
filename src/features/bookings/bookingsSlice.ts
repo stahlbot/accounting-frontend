@@ -95,7 +95,7 @@ export const selectBookingIdsSortedBy = createSelector(
     const bookingsSorted = bookingsFiltered.sort((a, b) =>
       sortStringsAndNumbers(a, b, sortBy)
     );
-    return bookingsSorted.reverse().map((c) => c.id);
+    return bookingsSorted.map((booking) => booking.id);
   }
 );
 
@@ -107,6 +107,24 @@ export const selectBookingsOfAccount = createSelector(
         booking.credit == accountId || booking.debit == accountId
     );
     return bookingsOfAccount;
+  }
+);
+
+export const selectBookingsIdsOfAccountSortedBy = createSelector(
+  [
+    selectAllBookings,
+    (state, props) => props.accountId,
+    (state, props) => props.sortBy,
+  ],
+  (bookings, accountId, sortBy) => {
+    const bookingsOfAccount = bookings.filter(
+      (booking: Booking) =>
+        booking.credit == accountId || booking.debit == accountId
+    );
+    const bookingsSorted = bookingsOfAccount.sort((a, b) =>
+      sortStringsAndNumbers(a, b, sortBy)
+    );
+    return bookingsOfAccount.map((booking) => booking.id);
   }
 );
 

@@ -27,6 +27,7 @@ import ClientAccountsPage from "./features/clients/ClientAccountsPage";
 import ClientBookingsPage from "./features/bookings/ClientBookingsPage";
 import { AccountChartTable } from "./features/accountCharts/AccountChartTable";
 import { CategoryTable } from "./features/categories/CategoryTable";
+import ClientAccountPage from "./features/accounts/ClientAccountPage";
 
 // import './App.css'
 
@@ -105,6 +106,16 @@ function App() {
                   isAuthenticated={isAuthenticated}
                   authenticationPath="/login"
                   outlet={<ClientAccountsPage />}
+                />
+              ),
+            },
+            {
+              path: "accounts/:accountId",
+              element: (
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  authenticationPath="/login"
+                  outlet={<ClientAccountPage />}
                 />
               ),
             },

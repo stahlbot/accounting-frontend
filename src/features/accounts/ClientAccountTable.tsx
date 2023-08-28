@@ -1,7 +1,7 @@
 import PowerTable from "../tables/PowerTable";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import AccountRow from "./AccountRow";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   deleteAccountChart,
@@ -12,6 +12,7 @@ import { clearAccountsState, deleteAccount } from "./accountsSlice";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal } from "@mantine/core";
 import { AccountForm } from "./AccountForm";
+import ClientAccountRow from "./ClientAccountRow";
 
 interface Props {
   accounts: string[];
@@ -20,12 +21,13 @@ interface Props {
   accountChartId: string;
 }
 
-export const AccountTable = ({
+export const ClientAccountTable = ({
   accounts,
   sortBy,
   setSortBy,
   accountChartId,
 }: Props) => {
+  const { clientId } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -41,7 +43,14 @@ export const AccountTable = ({
     { accessorkey: "number", header: "Number" },
     { accessorkey: "category", header: "Category" },
     { accessorkey: "nonDeductibleTax", header: "Non deductible Tax" },
+    { accessorkey: "credit", header: "Credit" },
+    { accessorkey: "debit", header: "Debit" },
+    { accessorkey: "total", header: "Total" },
   ];
+
+  const onOpen = (id) => {
+    navigate(`/clients/${clientId}/accounts/${id}`);
+  };
 
   const onEdit = (id) => {
     setAccountEdited(id);
@@ -65,11 +74,12 @@ export const AccountTable = ({
       </Modal>
       <PowerTable
         columns={columns}
-        RowTemplate={AccountRow}
+        RowTemplate={ClientAccountRow}
         data={accounts}
         title={`Accounts`}
         setSortBy={setSortBy}
         sortBy={sortBy}
+        onOpen={onOpen}
         onAdd={() => {
           open();
           setAccountEdited("");

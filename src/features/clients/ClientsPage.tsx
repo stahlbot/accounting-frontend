@@ -37,7 +37,11 @@ const ClientsPage = () => {
   ];
 
   const onDelete = async (id) => {
-    await dispatch(deleteClient(id)).unwrap();
+    try {
+      await dispatch(deleteClient(id)).unwrap();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const onOpen = (id) => {
