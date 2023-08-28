@@ -13,49 +13,29 @@ import {
   selectCategoryIdsSortedBy,
 } from "../categories/categoriesSlice";
 import { CategoryTable } from "../categories/CategoryTable";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export const SettingsPage = () => {
   const dispatch = useAppDispatch();
-
-  const [accountChartSortBy, setAccountChartSortBy] = useState<string>("name");
-  const accountCharts = useSelector((state) =>
-    selectAccountChartIdsSortedBy(state, accountChartSortBy)
-  );
-  const accountChartsStatus = useSelector<RootState, string>(
-    (state) => state.accountCharts.status
-  );
-
-  useEffect(() => {
-    if (accountChartsStatus === "idle") {
-      dispatch(fetchAccountChartTemplates());
-    }
-  }, [dispatch, accountChartsStatus]);
-
-  const [categorySortBy, setCategorySortBy] = useState<string>("name");
-  const categories = useSelector((state) =>
-    selectCategoryIdsSortedBy(state, categorySortBy)
-  );
-  const categoriesStatus = useSelector<RootState, string>(
-    (state) => state.categories.status
-  );
-
-  useEffect(() => {
-    if (categoriesStatus === "idle") {
-      dispatch(fetchCategories());
-    }
-  }, [dispatch, categoriesStatus]);
+  const navigate = useNavigate();
 
   return (
-    <Tabs defaultValue="accountcharts">
+    <Tabs
+      value={useLocation()
+        .pathname.split("/")
+        .filter((str) => !/^\d+$/.test(str))
+        .pop()}
+      onTabChange={(value) => navigate(`/settings/${value}`)}
+    >
       <Tabs.List>
         <Text fz={30} fw={700}>
           Settings{" "}
         </Text>
-        <Tabs.Tab value="accountcharts">Account Charts</Tabs.Tab>
+        <Tabs.Tab value="account-charts">Account Charts</Tabs.Tab>
         <Tabs.Tab value="categories">Account Categories</Tabs.Tab>
       </Tabs.List>
-
-      <Tabs.Panel value="accountcharts" pt="xs">
+      <Outlet />
+      {/* <Tabs.Panel value="accountcharts" pt="xs">
         <AccountChartTable
           accountCharts={accountCharts}
           sortBy={accountChartSortBy}
@@ -68,7 +48,7 @@ export const SettingsPage = () => {
           sortBy={categorySortBy}
           setSortBy={setCategorySortBy}
         />
-      </Tabs.Panel>
+      </Tabs.Panel> */}
     </Tabs>
   );
 };

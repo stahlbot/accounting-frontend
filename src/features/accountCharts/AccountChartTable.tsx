@@ -4,16 +4,24 @@ import AccountChartRow from "./AccountChartRow";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AccountChartForm } from "./AccountChartForm";
-import { useAppDispatch } from "../../app/hooks";
-import { deleteAccountChart } from "./accountChartsSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  deleteAccountChart,
+  selectAccountChartIdsSortedBy,
+} from "./accountChartsSlice";
 import { useState } from "react";
 
-export const AccountChartTable = ({ accountCharts, sortBy, setSortBy }) => {
+export const AccountChartTable = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [opened, { open, close }] = useDisclosure(false);
   const [accountChartEdited, setAccountChartEdited] = useState<string>("");
+
+  const [accountChartSortBy, setAccountChartSortBy] = useState<string>("name");
+  const accountCharts = useAppSelector((state) =>
+    selectAccountChartIdsSortedBy(state, accountChartSortBy)
+  );
 
   const columns = [
     { accessorkey: "name", header: "Name" },
@@ -43,8 +51,8 @@ export const AccountChartTable = ({ accountCharts, sortBy, setSortBy }) => {
         RowTemplate={AccountChartRow}
         data={accountCharts}
         title="Account Charts"
-        setSortBy={setSortBy}
-        sortBy={sortBy}
+        setSortBy={setAccountChartSortBy}
+        sortBy={accountChartSortBy}
         onOpen={onOpen}
         onAdd={() => {
           open();

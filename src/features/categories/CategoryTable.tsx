@@ -3,17 +3,22 @@ import PowerTable from "../tables/PowerTable";
 import { CategoryRow } from "./CategoryRow";
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useAppDispatch } from "../../app/hooks";
-import { deleteCategory } from "./categoriesSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { deleteCategory, selectCategoryIdsSortedBy } from "./categoriesSlice";
 import { useState } from "react";
 import { CategoryForm } from "./categoryForm";
 
-export const CategoryTable = ({ categories, sortBy, setSortBy }) => {
+export const CategoryTable = () => {
   const dispatch = useAppDispatch();
   // const navigate = useNavigate();
 
   const [opened, { open, close }] = useDisclosure(false);
   const [categoryEdited, setCategoryEdited] = useState<string>("");
+
+  const [categorySortBy, setCategorySortBy] = useState<string>("name");
+  const categories = useAppSelector((state) =>
+    selectCategoryIdsSortedBy(state, categorySortBy)
+  );
 
   const columns = [
     { accessorkey: "name", header: "Name" },
@@ -43,8 +48,8 @@ export const CategoryTable = ({ categories, sortBy, setSortBy }) => {
         RowTemplate={CategoryRow}
         data={categories}
         title="Account Categories"
-        setSortBy={setSortBy}
-        sortBy={sortBy}
+        setSortBy={setCategorySortBy}
+        sortBy={categorySortBy}
         // onOpen={onOpen}
         onAdd={() => {
           open();

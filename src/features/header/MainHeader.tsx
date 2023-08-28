@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createStyles,
   Header,
@@ -14,8 +14,12 @@ import {
   selectISAuthenticated,
   selectUser,
 } from "../login/currentUserSlice";
-import { Link, redirect, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks";
+import { Link, Outlet, redirect, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { fetchClients } from "../clients/clientsSlice";
+import { fetchUsers } from "../user/userSlice";
+import { fetchAccountChartTemplates } from "../accountCharts/accountChartsSlice";
+import { fetchCategories } from "../categories/categoriesSlice";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -73,7 +77,7 @@ const links: Links[] = [
   { link: "/user", label: "User" },
   { link: "/dashboard", label: "Dashboard" },
   { link: "/clients", label: "Clients" },
-  { link: "/settings", label: "Settings" },
+  { link: "/settings/account-charts", label: "Settings" },
 ];
 
 export default function MainHeader(props) {
@@ -104,6 +108,40 @@ export default function MainHeader(props) {
     dispatch(logout());
   };
 
+  const clientsStatus = useAppSelector((state) => state.clients.status);
+
+  useEffect(() => {
+    if (clientsStatus === "idle") {
+      dispatch(fetchClients());
+    }
+  }, [dispatch, clientsStatus]);
+
+  const usersStatus = useAppSelector((state) => state.users.status);
+
+  useEffect(() => {
+    if (usersStatus === "idle") {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, usersStatus]);
+
+  const accountChartsStatus = useAppSelector(
+    (state) => state.accountCharts.status
+  );
+
+  useEffect(() => {
+    if (accountChartsStatus === "idle") {
+      dispatch(fetchAccountChartTemplates());
+    }
+  }, [dispatch, accountChartsStatus]);
+
+  const categoriesStatus = useAppSelector((state) => state.categories.status);
+
+  useEffect(() => {
+    if (categoriesStatus === "idle") {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categoriesStatus]);
+
   return (
     <>
       <Header height={60} mb={10}>
@@ -118,7 +156,7 @@ export default function MainHeader(props) {
           )}
         </Container>
       </Header>
-      {props.children}
+      <Outlet />
     </>
   );
 }

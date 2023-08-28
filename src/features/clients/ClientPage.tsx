@@ -1,7 +1,7 @@
 import { Tabs, Text } from "@mantine/core";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectClientById } from "./clientsSlice";
-import { useParams } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import ClientAccountsPage from "./ClientAccountsPage";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -19,6 +19,7 @@ import ClientBookingsPage from "../bookings/ClientBookingsPage";
 export const ClientPage = () => {
   const params = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   // const id = params.clientId as EntityId | undefined;
   // console.log(id);
 
@@ -100,17 +101,25 @@ export const ClientPage = () => {
     return (
       <>
         {client.accountChart ? (
-          <Tabs defaultValue="accountlist">
+          <Tabs
+            // Higlight the right Tab. works even when the url /client/1/accounts/1 is refreshed"
+            value={useLocation()
+              .pathname.split("/")
+              .filter((str) => !/^\d+$/.test(str))
+              .pop()}
+            onTabChange={(value) => navigate(`/clients/${client.id}/${value}`)}
+          >
             <Tabs.List>
               <Text>{client.name} - </Text>
               <Text>Year Selector: </Text>
-              <Tabs.Tab value="accountlist">Accounts</Tabs.Tab>
-              <Tabs.Tab value="bookinglist">Bookings</Tabs.Tab>
-              <Tabs.Tab value="balance">Balance</Tabs.Tab>
+              <Tabs.Tab value="accounts">Accounts</Tabs.Tab>
+              <Tabs.Tab value="bookings">Bookings</Tabs.Tab>
+              {/* <Tabs.Tab value="balance">Balance</Tabs.Tab>
               <Tabs.Tab value="profitloss">Profit and Loss</Tabs.Tab>
-              <Tabs.Tab value="settings">Settings</Tabs.Tab>
+              <Tabs.Tab value="settings">Settings</Tabs.Tab> */}
             </Tabs.List>
-
+            <Outlet />
+            {/* 
             <Tabs.Panel value="accountlist" pt="xs">
               <ClientAccountsPage accountChartId={client.accountChart} />
             </Tabs.Panel>
@@ -125,7 +134,7 @@ export const ClientPage = () => {
             </Tabs.Panel>
             <Tabs.Panel value="settings" pt="xs">
               Settings tab content
-            </Tabs.Panel>
+            </Tabs.Panel> */}
           </Tabs>
         ) : (
           <CopyAccountChart />

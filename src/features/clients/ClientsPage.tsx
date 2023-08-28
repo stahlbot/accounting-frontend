@@ -28,25 +28,6 @@ const ClientsPage = () => {
   const clients = useSelector((state) =>
     selectClientIdsSortedBy(state, { sortBy, search })
   );
-  const clientsStatus = useSelector<RootState, string>(
-    (state) => state.clients.status
-  );
-
-  useEffect(() => {
-    if (clientsStatus === "idle") {
-      dispatch(fetchClients());
-    }
-  }, [dispatch, clientsStatus]);
-
-  const usersStatus = useSelector<RootState, string>(
-    (state) => state.users.status
-  );
-
-  useEffect(() => {
-    if (usersStatus === "idle") {
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, usersStatus]);
 
   const columns = [
     { accessorkey: "name", header: "Name" },
@@ -60,7 +41,7 @@ const ClientsPage = () => {
   };
 
   const onOpen = (id) => {
-    navigate(`/clients/${id}`);
+    navigate(`/clients/${id}/accounts`);
   };
 
   const onEdit = (id) => {
