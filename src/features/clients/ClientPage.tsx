@@ -37,17 +37,31 @@ export const ClientPage = () => {
   const accountsStatus = useSelector<RootState, string>(
     (state) => state.accounts.status
   );
+
+  const clientsAccountsLoaded: string[] = useSelector<RootState, string[]>(
+    (state) => state.accounts.loadedAccountCharts
+  );
+
+  console.log(client);
+  console.log(clientsAccountsLoaded);
+
+  const accountsForClientAreLoaded: boolean = clientsAccountsLoaded.includes(
+    String(client?.accountChart)
+  );
+
+  console.log(accountsForClientAreLoaded);
+
   useEffect(() => {
-    if (accountsStatus === "idle" && client?.accountChart) {
+    if (!accountsForClientAreLoaded && client?.accountChart) {
       dispatch(fetchAccountsTemplate(client.accountChart));
     }
-  }, [dispatch, accountsStatus, client]);
+  }, [dispatch, clientsAccountsLoaded, client]);
   // Reset Accounts after leaving
-  useEffect(() => {
-    return () => {
-      dispatch(clearAccountsState());
-    };
-  }, [dispatch]);
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(clearAccountsState());
+  //   };
+  // }, [dispatch]);
 
   // Fetch Bookings of the client if not in already in state
   const bookingsStatus = useSelector<RootState, string>(
@@ -57,11 +71,15 @@ export const ClientPage = () => {
     (state) => state.bookings.loadedClients
   );
 
+  const bookingsForClientAreLoaded: boolean = clientsBookingsLoaded.includes(
+    String(params.clientId)
+  );
+
   useEffect(() => {
     if (
       // bookingsStatus === "idle" &&
       client?.accountChart &&
-      !clientsBookingsLoaded.includes(String(params.clientId))
+      !bookingsForClientAreLoaded
     ) {
       dispatch(fetchBookings(params.clientId!));
     }
@@ -71,13 +89,14 @@ export const ClientPage = () => {
   const categoriesStatus = useSelector<RootState, string>(
     (state) => state.categories.status
   );
+  const categoriesAreLoaded: boolean = categoriesStatus === "succeeded";
   useEffect(() => {
     if (categoriesStatus === "idle") {
       dispatch(fetchCategories());
     }
   }, [dispatch, categoriesStatus]);
 
-  if (client) {
+  if (client && accountsForClientAreLoaded && bookingsForClientAreLoaded) {
     return (
       <>
         {client.accountChart ? (

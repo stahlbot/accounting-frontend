@@ -41,6 +41,9 @@ export const AccountTable = ({
     { accessorkey: "number", header: "Number" },
     { accessorkey: "category", header: "Category" },
     { accessorkey: "nonDeductibleTax", header: "Non deductible Tax" },
+    { accessorkey: "credit", header: "Credit" },
+    { accessorkey: "debit", header: "Debit" },
+    { accessorkey: "total", header: "Total" },
   ];
 
   const onOpen = (id) => {

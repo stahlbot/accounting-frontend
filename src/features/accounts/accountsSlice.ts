@@ -9,6 +9,8 @@ import type { PayloadAction, Update } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
 import { sortStringsAndNumbers } from "../../app/sort";
+import { useAppSelector } from "../../app/hooks";
+import { Booking, selectBookingsOfAccount } from "../bookings/bookingsSlice";
 
 interface Account {
   id: string;
@@ -24,12 +26,21 @@ const accountsAdapter = createEntityAdapter<Account>({
   sortComparer: (a, b) => a.name.localeCompare(b.name),
 });
 
+interface AdditionalState {
+  status: string;
+  error: string | null;
+  loadedAccountCharts: string[];
+}
+
+const initialState: AdditionalState = {
+  status: "idle",
+  error: null,
+  loadedAccountCharts: [],
+};
+
 const accountsSlice = createSlice({
   name: "accounts",
-  initialState: accountsAdapter.getInitialState({
-    status: "idle",
-    error: null,
-  }),
+  initialState: accountsAdapter.getInitialState(initialState),
   reducers: {
     clearAccountsState(state) {
       state.status = "idle";
@@ -44,9 +55,13 @@ const accountsSlice = createSlice({
       })
       .addCase(
         fetchAccountsTemplate.fulfilled,
-        (state, action: PayloadAction<Account[]>) => {
+        (
+          state,
+          action: PayloadAction<{ data: Account[]; accountChartId: string }>
+        ) => {
           state.status = "succeeded";
-          accountsAdapter.upsertMany(state, action.payload);
+          accountsAdapter.upsertMany(state, action.payload.data);
+          state.loadedAccountCharts.push(String(action.payload.accountChartId));
         }
       )
       .addCase(fetchAccountsTemplate.rejected, (state) => {
@@ -103,13 +118,55 @@ export const selectClientAccountsSortedBy = createSelector(
   }
 );
 
+export const selectAccountBalances = createSelector(
+  [
+    (state, accountId) => {
+      const uff: { bookingsOfAccount: Booking[]; accountId: string } = {
+        bookingsOfAccount: selectBookingsOfAccount(state, accountId),
+        accountId,
+      };
+      return uff;
+    },
+    // (state, props) => props.accountIdToo,
+  ],
+  ({ bookingsOfAccount, accountId }) => {
+    // const bookingsOfAccount = useAppSelector((state) =>
+    //   selectBookingsOfAccount(state, accountId)
+    // );
+    {
+    }
+
+    const debitPositve = bookingsOfAccount
+      .filter((booking) => booking.debit == accountId && booking.value > 0)
+      .map((booking) => booking.value)
+      .reduce((a, b) => a + b, 0);
+    const debitNegative = bookingsOfAccount
+      .filter((booking) => booking.debit == accountId && booking.value < 0)
+      .map((booking) => booking.value)
+      .reduce((a, b) => a + b, 0);
+    const creditPositive = bookingsOfAccount
+      .filter((booking) => booking.credit == accountId && booking.value > 0)
+      .map((booking) => booking.value)
+      .reduce((a, b) => a + b, 0);
+    const creditNegative = bookingsOfAccount
+      .filter((booking) => booking.credit == accountId && booking.value < 0)
+      .map((booking) => booking.value)
+      .reduce((a, b) => a + b, 0);
+    const debit = debitPositve - creditNegative;
+    const credit = creditPositive - debitNegative;
+    const total = debit - credit;
+
+    return { total, debit, credit };
+  }
+);
+
 export const fetchAccountsTemplate = createAsyncThunk(
   "accounts/fetchAccountTemplates",
   async (accountChartId: string) => {
     const response = await axiosInstance.get(
       `/api/v1/account-charts/${accountChartId}/accounts`
     );
-    return response.data;
+    return { data: response.data, accountChartId };
   }
 );
 

@@ -56,8 +56,10 @@ const bookingsSlice = createSlice({
           action: PayloadAction<{ data: Booking[]; clientId: string }>
         ) => {
           state.status = "succeeded";
+          // console.log(state.loadedClients);
           bookingsAdapter.upsertMany(state, action.payload.data);
           state.loadedClients.push(action.payload.clientId);
+          // console.log(state.loadedClients);
         }
       )
       .addCase(fetchBookings.rejected, (state) => {
@@ -94,6 +96,17 @@ export const selectBookingIdsSortedBy = createSelector(
       sortStringsAndNumbers(a, b, sortBy)
     );
     return bookingsSorted.reverse().map((c) => c.id);
+  }
+);
+
+export const selectBookingsOfAccount = createSelector(
+  [selectAllBookings, (state, accountId) => accountId],
+  (bookings, accountId) => {
+    const bookingsOfAccount = bookings.filter(
+      (booking: Booking) =>
+        booking.credit == accountId || booking.debit == accountId
+    );
+    return bookingsOfAccount;
   }
 );
 
