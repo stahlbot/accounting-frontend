@@ -1,6 +1,6 @@
 # Requirements
 - npm
-- [this](https://github.com/stahlbot/accounting-backend)
+- [Accounting Backend](https://github.com/stahlbot/accounting-backend)
 
 # Installation
 1. Clone repo
