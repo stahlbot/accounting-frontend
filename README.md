@@ -10,7 +10,7 @@
 # Start
 1. backend should be running
 2. `npm run dev`
-3. navigate to `http://localhost:5173/`
+3. navigate to `http://localhost:5173/login`
 4. Demodata is provided in a sqlite3 database. Login with username: "dennischlaeger", password: "accounting123"
 
 # Features
