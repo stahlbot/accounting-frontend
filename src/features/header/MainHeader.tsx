@@ -112,36 +112,36 @@ export default function MainHeader(props) {
   const clientsStatus = useAppSelector((state) => state.clients.status);
 
   useEffect(() => {
-    if (clientsStatus === "idle") {
+    if (isAuthenticated && clientsStatus === "idle") {
       dispatch(fetchClients());
     }
-  }, [dispatch, clientsStatus]);
+  }, [dispatch, clientsStatus, isAuthenticated]);
 
   const usersStatus = useAppSelector((state) => state.users.status);
 
   useEffect(() => {
-    if (usersStatus === "idle") {
+    if (isAuthenticated && usersStatus === "idle") {
       dispatch(fetchUsers());
     }
-  }, [dispatch, usersStatus]);
+  }, [dispatch, usersStatus, isAuthenticated]);
 
   const accountChartsStatus = useAppSelector(
     (state) => state.accountCharts.status
   );
 
   useEffect(() => {
-    if (accountChartsStatus === "idle") {
+    if (isAuthenticated && accountChartsStatus === "idle") {
       dispatch(fetchAccountChartTemplates());
     }
-  }, [dispatch, accountChartsStatus]);
+  }, [dispatch, accountChartsStatus, isAuthenticated]);
 
   const categoriesStatus = useAppSelector((state) => state.categories.status);
 
   useEffect(() => {
-    if (categoriesStatus === "idle") {
+    if (isAuthenticated && categoriesStatus === "idle") {
       dispatch(fetchCategories());
     }
-  }, [dispatch, categoriesStatus]);
+  }, [dispatch, categoriesStatus, isAuthenticated]);
 
   return (
     <>
