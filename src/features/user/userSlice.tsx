@@ -10,17 +10,17 @@ import { axiosInstance } from "../../api/api";
 import { RootState } from "../../app/store";
 import { sortStringsAndNumbers } from "../../app/sort";
 
-type User = { id: string; username: string; email: string };
-const usersAdapter = createEntityAdapter<User>({
-  selectId: (user) => user.id,
-  sortComparer: (a, b) => a.username.localeCompare(b.username),
-});
-
 interface UsersState {
   id: string;
   username: string;
+  first_name: string;
+  last_name: string;
   email: string;
 }
+const usersAdapter = createEntityAdapter<UsersState>({
+  selectId: (user) => user.id,
+  sortComparer: (a, b) => a.username.localeCompare(b.username),
+});
 
 const usersSlice = createSlice({
   name: "users",
@@ -57,11 +57,11 @@ export const {
 
 export const selectUserIdsSortedBy = createSelector(
   [selectAllUsers, (state, sortBy) => sortBy],
-  (clients, sortBy) => {
-    const clientsSorted = clients.sort((a, b) =>
+  (users, sortBy) => {
+    const usersSorted = users.sort((a, b) =>
       sortStringsAndNumbers(a, b, sortBy)
     );
-    return clientsSorted.map((c) => c.id);
+    return usersSorted.map((c) => c.id);
   }
 );
 

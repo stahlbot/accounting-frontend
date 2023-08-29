@@ -14,7 +14,7 @@ export default function ClientAccountsPage() {
 
   const accountChartId = client!.accountChart;
 
-  const [sortBy, setSortBy] = useState<string>("name");
+  const [sortBy, setSortBy] = useState<string>("number");
   const accounts = useSelector((state) =>
     selectAccountIdsSortedBy(state, {
       sortBy: sortBy,

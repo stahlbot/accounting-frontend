@@ -50,7 +50,7 @@ export const AccountChartTable = () => {
         columns={columns}
         RowTemplate={AccountChartRow}
         data={accountCharts}
-        title="Account Charts"
+        // title="Account Charts"
         setSortBy={setAccountChartSortBy}
         sortBy={accountChartSortBy}
         onOpen={onOpen}

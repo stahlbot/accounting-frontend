@@ -76,7 +76,7 @@ interface Links {
 
 const links: Links[] = [
   { link: "/user", label: "User" },
-  { link: "/dashboard", label: "Dashboard" },
+  // { link: "/dashboard", label: "Dashboard" },
   { link: "/clients", label: "Clients" },
   { link: "/settings/account-charts", label: "Settings" },
 ];
@@ -147,10 +147,10 @@ export default function MainHeader(props) {
     <>
       <Header height={60} mb={10}>
         <Grid className={classes.header} justify="space-between">
-          <Grid.Col span={6}>
+          <Grid.Col span={8}>
             <Title>Accounting App</Title>
           </Grid.Col>
-          <Grid.Col span={6}>
+          <Grid.Col span={4}>
             {isAuthenticated && (
               <>
                 <Group spacing={5}>

@@ -8,7 +8,7 @@ export default function ClientRow({ id, children }) {
 
   const clerk = useAppSelector((state) => selectUserById(state, client.clerk));
 
-  const clerkName = clerk ? clerk.username : "";
+  const clerkName = clerk ? `${clerk.first_name} ${clerk.last_name}` : "";
 
   const date = parseISO(client.createdAt);
 

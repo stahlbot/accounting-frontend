@@ -25,7 +25,8 @@ export const UserPage = () => {
   const users = useSelector((state) => selectUserIdsSortedBy(state, sortBy));
 
   const columns = [
-    { accessorkey: "userName", header: "Name" },
+    { accessorkey: "username", header: "Name" },
+    { accessorkey: "first_name", header: "Name" },
     { accessorkey: "email", header: "Email" },
   ];
 

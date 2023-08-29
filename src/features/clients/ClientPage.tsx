@@ -53,8 +53,8 @@ export const ClientPage = () => {
   console.log(accountsForClientAreLoaded);
 
   useEffect(() => {
-    if (!accountsForClientAreLoaded && client?.accountChart) {
-      dispatch(fetchAccountsTemplate(client.accountChart));
+    if (!accountsForClientAreLoaded && client) {
+      dispatch(fetchAccountsTemplate(client!.accountChart));
     }
   }, [dispatch, clientsAccountsLoaded, client]);
   // Reset Accounts after leaving
@@ -97,10 +97,10 @@ export const ClientPage = () => {
     }
   }, [dispatch, categoriesStatus]);
 
-  if (client && accountsForClientAreLoaded && bookingsForClientAreLoaded) {
+  if (client && client.accountChart) {
     return (
       <>
-        {client.accountChart ? (
+        {accountsForClientAreLoaded && bookingsForClientAreLoaded ? (
           <Tabs
             // Higlight the right Tab. works even when the url /client/1/accounts/1 is refreshed"
             value={useLocation()
@@ -110,8 +110,10 @@ export const ClientPage = () => {
             onTabChange={(value) => navigate(`/clients/${client.id}/${value}`)}
           >
             <Tabs.List>
-              <Text>{client.name} - </Text>
-              <Text>Year Selector: </Text>
+              <Text fz={30} fw={700}>
+                {client.name}
+              </Text>
+              {/* <Text>Year Selector: </Text> */}
               <Tabs.Tab value="accounts">Accounts</Tabs.Tab>
               <Tabs.Tab value="bookings">Bookings</Tabs.Tab>
               {/* <Tabs.Tab value="balance">Balance</Tabs.Tab>
@@ -137,10 +139,12 @@ export const ClientPage = () => {
             </Tabs.Panel> */}
           </Tabs>
         ) : (
-          <CopyAccountChart />
+          "Loading"
         )}
       </>
     );
+  } else if (client) {
+    return <CopyAccountChart />;
   } else {
     return "Loading";
   }

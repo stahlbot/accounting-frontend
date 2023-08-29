@@ -59,7 +59,7 @@ const AddClientForm = ({ close, clientId }: Props) => {
 
   const users = useSelector(selectAllUsers).map((user) => ({
     value: user.id,
-    label: user.username,
+    label: `${user.first_name} ${user.last_name}`,
   }));
 
   return (
